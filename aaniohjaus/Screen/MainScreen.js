@@ -12,11 +12,6 @@ import Tts from 'react-native-tts';
 const MainScreen = () => {
   const [katu, setKatu] = React.useState('Hämeenkadulla');
 
-  // set katu new value 1000 milliseconds after the first render
-  React.useEffect(() => {
-    // speak();
-  }, [katu]);
-
   const speak = () => {
     if (Platform.OS === 'ios') {
       Tts.setDefaultLanguage('fi-FI');
