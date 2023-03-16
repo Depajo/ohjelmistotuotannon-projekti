@@ -9,10 +9,12 @@ import {
 } from 'react-native';
 import Tts from 'react-native-tts';
 import {request, PERMISSIONS, check, RESULTS} from 'react-native-permissions';
+import Geolocation from '@react-native-community/geolocation';
 
 const MainScreen = () => {
   const [katu, setKatu] = React.useState('Hämeenkadulla');
   const [permissions, setPermissions] = React.useState(null);
+  const [location, setLocation] = React.useState(null);
 
   useEffect(() => {
     console.log('useEffect');
@@ -23,6 +25,21 @@ const MainScreen = () => {
       android();
     }
   }, []);
+
+  const getLocation = () => {
+    if (permissions === RESULTS.GRANTED) {
+      Geolocation.getCurrentPosition(
+        position => {
+          console.log(position);
+          setLocation(position);
+        },
+        error => {
+          console.log(error);
+        },
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+      );
+    }
+  };
 
   const ios = () => {
     console.log('useEffect');
@@ -89,6 +106,11 @@ const MainScreen = () => {
 
   return (
     <View style={styles.container}>
+      {location != null ? (
+        <Text>
+          {location.coords.latitude} {location.coords.longitude}
+        </Text>
+      ) : null}
       <TextInput
         style={styles.TextInput}
         value={katu}
@@ -96,6 +118,7 @@ const MainScreen = () => {
         placeholder={'Hämeenkatu'}
       />
       <Button title="Click" onPress={speak} />
+      <Button title="Location" onPress={getLocation} />
     </View>
   );
 };
