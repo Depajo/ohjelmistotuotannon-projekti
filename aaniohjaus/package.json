@@ -12,6 +12,7 @@
   "dependencies": {
     "react": "18.2.0",
     "react-native": "0.71.4",
+    "react-native-permissions": "^3.8.0",
     "react-native-tts": "^4.1.0"
   },
   "devDependencies": {

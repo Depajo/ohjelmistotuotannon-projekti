@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,61 @@ import {
   TextInput,
 } from 'react-native';
 import Tts from 'react-native-tts';
+import {request, PERMISSIONS, check, RESULTS} from 'react-native-permissions';
 
 const MainScreen = () => {
   const [katu, setKatu] = React.useState('Hämeenkadulla');
+  const [permissions, setPermissions] = React.useState(null);
+
+  useEffect(() => {
+    console.log('useEffect');
+    if (Platform.OS === 'ios') {
+      ios();
+    }
+    if (Platform.OS === 'android') {
+      android();
+    }
+  }, []);
+
+  const ios = () => {
+    console.log('useEffect');
+    if (Platform.OS === 'ios') {
+      check(PERMISSIONS.IOS.LOCATION_ALWAYS).then(result => {
+        setPermissions(result);
+        console.log(result);
+      });
+    }
+
+    try {
+      if (permissions === RESULTS.DENIED && Platform.OS === 'ios') {
+        request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(result => {
+          setPermissions(result);
+          console.log(result);
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const android = () => {
+    if (Platform.OS === 'android') {
+      check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
+        setPermissions(result);
+        console.log(result);
+      });
+    }
+    try {
+      if (permissions === RESULTS.DENIED && Platform.OS === 'android') {
+        request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
+          setPermissions(result);
+          console.log(result);
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const speak = () => {
     if (Platform.OS === 'ios') {
@@ -22,6 +74,7 @@ const MainScreen = () => {
     }
 
     if (Platform.OS === 'android') {
+      console.log('android');
       Tts.setDefaultLanguage('fi-FI');
       Tts.speak(katu, {
         androidParams: {
@@ -30,6 +83,8 @@ const MainScreen = () => {
         },
       });
     }
+
+    console.log('speak');
   };
 
   return (
