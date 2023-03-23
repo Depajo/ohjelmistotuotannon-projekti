@@ -19,15 +19,16 @@ const MainScreen = () => {
     if (Platform.OS === 'android') {
       android();
     }
-    if (katu != null) {
-      speak();
-    }
+
+    speak();
   }, [katu]);
 
   const onOff = () => {
     console.log('onOff');
     if (udpate === 'Not fetched') {
       console.log('fetching location');
+      styles.MyButton.backgroundColor = 'green';
+      speak();
       setUpdate('fetching');
       setUpdateLocation(
         setInterval(() => {
@@ -35,6 +36,7 @@ const MainScreen = () => {
         }, 1000),
       );
     } else {
+      styles.MyButton.backgroundColor = 'red';
       console.log('not fetching location');
       clearInterval(udpateLocation);
       setUpdate('Not fetched');
@@ -118,7 +120,7 @@ const MainScreen = () => {
   const speak = () => {
     // console.log('speak');
 
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' && katu != null) {
       Tts.addEventListener('tts-start', event => console.log('start', event));
       Tts.setDefaultLanguage('fi-FI');
       Tts.speak(address.road, {
@@ -128,7 +130,7 @@ const MainScreen = () => {
       Tts.addEventListener('tts-finish', event => console.log('finish', event));
     }
 
-    if (Platform.OS === 'android') {
+    if (Platform.OS === 'android' && katu != null) {
       Tts.addEventListener('tts-start', event => console.log('start', event));
       Tts.setDefaultLanguage('fi-FI');
       Tts.speak(address.road, {
@@ -141,30 +143,42 @@ const MainScreen = () => {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      {address != null ? (
-        // <Text style={styles.TextInput}>{address.road}</Text>
-        <Text style={styles.TextStyle}>
-          {address.road + ' ' + address.house_number}
-        </Text>
-      ) : (
-        <Text style={styles.TextStyle}>Ei sijaintia</Text>
-      )}
-      {/* <TouchableOpacity style={styles.MyButton} onPress={speak}>
-        <Text style={styles.ButtonText}>Puhu</Text>
-      </TouchableOpacity> */}
-      <TouchableOpacity
-        style={({backgroundColor: 'green'}, styles.MyButton)}
-        onPress={onOff}>
-        {udpate === 'Not fetched' ? (
-          <Text style={styles.ButtonText}>On</Text>
+  if (permissions == RESULTS.GRANTED) {
+    return (
+      <View style={styles.container}>
+        {address != null ? (
+          <Text style={styles.TextStyle}>
+            {address.road + ' ' + address.house_number}
+          </Text>
         ) : (
-          <Text style={styles.ButtonText}>Off</Text>
+          <Text style={styles.TextStyle}>Ei sijaintia</Text>
         )}
-      </TouchableOpacity>
-    </View>
-  );
+        <TouchableOpacity
+          style={({backgroundColor: 'green'}, styles.MyButton)}
+          onPress={onOff}>
+          {udpate === 'Not fetched' ? (
+            <Text style={styles.ButtonText}>Off</Text>
+          ) : (
+            <Text style={styles.ButtonText}>On</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.container}>
+        <Text
+          style={{
+            color: 'red',
+            fontSize: 30,
+            margin: 10,
+            textAlign: 'center',
+          }}>
+          Anna lupa käyttää sijaintia kun käytät sovellust
+        </Text>
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -172,17 +186,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
     width: '100%',
   },
   TextStyle: {
     height: 40,
     textAlign: 'center',
-    width: 200,
-    color: 'black',
+    color: '#808080',
     padding: 10,
     borderRadius: 10,
-    fontSize: 20,
+    fontSize: 30,
     marginTop: 5,
   },
 
