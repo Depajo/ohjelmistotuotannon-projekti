@@ -6,6 +6,7 @@ import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 
 const MainScreen = () => {
+  const [address, setAddress] = React.useState(null);
   const [katu, setKatu] = React.useState(null);
   const [permissions, setPermissions] = React.useState(null);
   const [udpate, setUpdate] = React.useState('Not fetched');
@@ -18,15 +19,16 @@ const MainScreen = () => {
     if (Platform.OS === 'android') {
       android();
     }
-    if (katu != null) {
-      speak();
-    }
+
+    speak();
   }, [katu]);
 
   const onOff = () => {
     console.log('onOff');
     if (udpate === 'Not fetched') {
       console.log('fetching location');
+      styles.MyButton.backgroundColor = 'green';
+      speak();
       setUpdate('fetching');
       setUpdateLocation(
         setInterval(() => {
@@ -34,6 +36,7 @@ const MainScreen = () => {
         }, 1000),
       );
     } else {
+      styles.MyButton.backgroundColor = 'red';
       console.log('not fetching location');
       clearInterval(udpateLocation);
       setUpdate('Not fetched');
@@ -44,7 +47,7 @@ const MainScreen = () => {
     if (permissions === RESULTS.GRANTED) {
       Geolocation.getCurrentPosition(
         position => {
-          console.log(position);
+          // console.log(position);
           fetchLocation(position.coords.longitude, position.coords.latitude);
         },
         error => {
@@ -56,13 +59,6 @@ const MainScreen = () => {
   };
 
   const fetchLocation = (longitude, latitude) => {
-    console.log(
-      'https://nominatim.openstreetmap.org/reverse?lat=' +
-        latitude +
-        'lon=' +
-        longitude,
-    );
-
     axios
       .get(
         'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' +
@@ -71,26 +67,15 @@ const MainScreen = () => {
           longitude,
       )
       .then(response => {
-        console.log(response.data);
+        // console.log(response.data.address);
+        setAddress(response.data.address);
         setKatu(response.data.address.road);
       })
       .catch(error => {
         console.log(error.message);
       });
 
-    // fetch(
-    //   'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}',
-    // )
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     // console.log(data);
-    //     setKatu(data.address.road);
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
-
-    console.log('fetching location');
+    // console.log('fetching location');
   };
 
   const ios = () => {
@@ -133,39 +118,67 @@ const MainScreen = () => {
   };
 
   const speak = () => {
-    console.log('speak');
+    // console.log('speak');
 
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' && katu != null) {
+      Tts.addEventListener('tts-start', event => console.log('start', event));
       Tts.setDefaultLanguage('fi-FI');
-      Tts.speak(katu, {
+      Tts.speak(address.road, {
         iosVoiceId: 'com.apple.ttsbundle.Satu-compact',
         rate: 0.5,
       });
+      Tts.addEventListener('tts-finish', event => console.log('finish', event));
     }
 
-    if (Platform.OS === 'android') {
-      console.log('android');
+    if (Platform.OS === 'android' && katu != null) {
+      Tts.addEventListener('tts-start', event => console.log('start', event));
       Tts.setDefaultLanguage('fi-FI');
-      Tts.speak(katu, {
+      Tts.speak(address.road, {
         androidParams: {
           KEY_PARAM_PITCH: 1,
           KEY_PARAM_STREAM: 'STREAM_MUSIC',
         },
       });
+      Tts.addEventListener('tts-finish', event => console.log('finish', event));
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.TextInput}>{katu}</Text>
-      <TouchableOpacity style={styles.MyButton} onPress={speak}>
-        <Text style={styles.ButtonText}>Puhu</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.MyButton} onPress={onOff}>
-        <Text style={styles.ButtonText}>Sijainti</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  if (permissions == RESULTS.GRANTED) {
+    return (
+      <View style={styles.container}>
+        {address != null ? (
+          <Text style={styles.TextStyle}>
+            {address.road + ' ' + address.house_number}
+          </Text>
+        ) : (
+          <Text style={styles.TextStyle}>Ei sijaintia</Text>
+        )}
+        <TouchableOpacity
+          style={({backgroundColor: 'green'}, styles.MyButton)}
+          onPress={onOff}>
+          {udpate === 'Not fetched' ? (
+            <Text style={styles.ButtonText}>Off</Text>
+          ) : (
+            <Text style={styles.ButtonText}>On</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.container}>
+        <Text
+          style={{
+            color: 'red',
+            fontSize: 30,
+            margin: 10,
+            textAlign: 'center',
+          }}>
+          Anna lupa käyttää sijaintia kun käytät sovellust
+        </Text>
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -173,31 +186,27 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
     width: '100%',
   },
-  TextInput: {
+  TextStyle: {
     height: 40,
     textAlign: 'center',
-    width: 200,
-    borderColor: 'gray',
-    color: 'black',
+    color: '#808080',
     padding: 10,
     borderRadius: 10,
-    borderWidth: 1,
-    fontSize: 20,
+    fontSize: 30,
     marginTop: 5,
   },
 
   MyButton: {
-    height: 50,
-    width: 200,
+    height: 100,
+    width: 100,
     borderColor: 'gray',
     padding: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-    backgroundColor: 'red',
-    marginTop: 5,
+    borderRadius: 100,
+    backgroundColor: 'blue',
+    marginTop: 50,
+    justifyContent: 'center',
   },
   ButtonText: {
     color: 'white',
