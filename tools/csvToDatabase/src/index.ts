@@ -1,19 +1,28 @@
 import mysql from "mysql";
 import * as fsPromise from "fs/promises";
 
+const start = Date.now();
+
 type Data = {
     region_id: number;
     munincipality: number;
     street: string;
-    street_number: string;
+    streetNumber: string;
+    postalCode: string;
     lat: number;
     lon: number;
+}
+
+type Postal = {
+    postalCode: string;
+    munincipality: number;
 }
 
 var connection = mysql.createConnection({
     host: "mydb.tamk.fi",
     user: "cgotky",
-    password: "d4t4B4s3"
+    password: "d4t4B4s3",
+    database: "dbcgotky3"
 });
 
 connection.connect((err) => {
@@ -24,13 +33,124 @@ connection.connect((err) => {
     console.log("Connected");
 });
 
-var query : string = "TÄHÄN SQL-QUERY";
+let streets : Data[] = [];
+let postalCodes = new Map<string, Postal>();
 
-// connection.query(query, [data.region_id, data.munincipality, data.street, data.lat, data.lon], (err, result) => {
-//     if (err) {
-//         console.log(err);
-//         return;
-//     } else {
-//         console.log(result);
-//     }
-// });
+async function readFile() {
+    const file = await fsPromise.open("./src/Tampere_kadut.csv", "r");
+    for await (const line of file.readLines()) {
+        let lineSplit : string[] = line.split(",");
+        streets.push({
+            region_id: +lineSplit[0],
+            munincipality: +lineSplit[1],
+            street: lineSplit[2],
+            streetNumber: lineSplit[3],
+            postalCode: lineSplit[4],
+            lat: +lineSplit[5],
+            lon: +lineSplit[6]
+        });
+        postalCodes.set(
+            lineSplit[4], {
+                postalCode: lineSplit[4], 
+                munincipality: +lineSplit[1]
+            }
+        );
+    }
+}
+
+readFile().then(() => {
+    connection.beginTransaction((err) => {
+        if (err) {
+            throw err;
+        }
+        connection.query("INSERT INTO maakunta SET aluenumero = 5, maakunta = 'Pirkanmaa'", (error, results) => {
+            if (error) {
+                return connection.rollback(() => {
+                    throw error;
+                });
+            }
+            console.log("Maakunta done!");
+        });
+
+        connection.query("INSERT INTO kunta SET kunta_id = 837, aluenumero = 5, kunta = 'Tampere'", (error, results) => {
+            if (error) {
+                return connection.rollback(() => {
+                    throw error;
+                });
+            }
+            console.log("Kunta done!");
+        });
+
+        const queryPromises : Promise<any>[] = [];
+
+        postalCodes.forEach((item) => {
+            const postalPromise = new Promise((resolve, reject) => {
+                connection.query("INSERT INTO alue SET postinumero = ?, kunta_id = ?", [item.postalCode, item.munincipality], (error, results) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(results);
+                    }
+                });
+            });
+            queryPromises.push(postalPromise);
+        });
+
+        Promise.all(queryPromises).then(() => {
+            console.log("Alue done!");
+            queryPromises.length = 0;
+            streets.forEach((item) => {
+                const selectQuery = "SELECT alue_id FROM alue WHERE alue.postinumero = ?";
+                const insertQuery = "INSERT INTO katutiedot SET alue_id = ?, katu = ?, katunumero = ?, latitude = ?, longitude = ?"
+                const insertParams = [item.street, item.streetNumber, item.lat, item.lon];
+
+                const streetPromise = new Promise((resolve, reject) => {
+                    connection.query(selectQuery , item.postalCode, (selectError, selectResults) => {
+                            if (selectError) {
+                                reject(selectError);
+                            } else {
+                                let areaNumber : number = selectResults[0].alue_id;
+                                insertParams.unshift(areaNumber);
+                                connection.query(insertQuery, insertParams, (insertError, insertResults) => {
+                                    if (insertError) {
+                                        reject(insertError);
+                                    } else {
+                                        resolve(insertResults);
+                                    }
+                                });
+                            }
+                        }
+                    );
+                });
+                queryPromises.push(streetPromise);
+            });
+
+            Promise.all(queryPromises).then(() => {
+                connection.commit((error) => {
+                    if (error) {
+                        connection.rollback(() => {
+                            throw error;
+                        });
+                    }
+                    console.log("Katutiedot done!");
+                    connection.end();
+                    const end = Date.now();
+                    let seconds = Math.floor((end - start) / 1000);
+                    console.log(`Time elapsed ${Math.floor((seconds / 60) % 60)} minutes and ${seconds % 60} seconds`);
+                });
+            }).catch((e) => {
+                if (e) {
+                    connection.rollback(() => {
+                        throw e;
+                    });
+                }
+            });
+        }).catch((e) => {
+            if (e) {
+                connection.rollback(() => {
+                    throw e;
+                });
+            }
+        });
+    });
+});
