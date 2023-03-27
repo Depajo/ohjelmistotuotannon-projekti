@@ -69,7 +69,10 @@ readFile().then(() => {
                     throw error;
                 });
             }
+            const step1 = Date.now();
+            const seconds = (step1 - start) / 1000; 
             console.log("Maakunta done!");
+            console.log(`Time elapsed ${Math.floor((seconds / 60) % 60)} minutes and ${(seconds % 60).toFixed(2)} seconds`);
         });
 
         connection.query("INSERT INTO kunta SET kunta_id = 837, aluenumero = 5, kunta = 'Tampere'", (error, results) => {
@@ -78,7 +81,10 @@ readFile().then(() => {
                     throw error;
                 });
             }
+            const step2 = Date.now();
+            const seconds : number = (step2 - start) / 1000;
             console.log("Kunta done!");
+            console.log(`Time elapsed ${Math.floor((seconds / 60) % 60)} minutes and ${(seconds % 60).toFixed(2)} seconds`);
         });
 
         const queryPromises : Promise<any>[] = [];
@@ -97,7 +103,10 @@ readFile().then(() => {
         });
 
         Promise.all(queryPromises).then(() => {
+            const step3 = Date.now();
+            const seconds : number = (step3 - start) / 1000;
             console.log("Alue done!");
+            console.log(`Time elapsed ${Math.floor((seconds / 60) % 60)} minutes and ${(seconds % 60).toFixed(2)} seconds`);
             queryPromises.length = 0;
             streets.forEach((item) => {
                 const selectQuery = "SELECT alue_id FROM alue WHERE alue.postinumero = ?";
@@ -135,8 +144,8 @@ readFile().then(() => {
                     console.log("Katutiedot done!");
                     connection.end();
                     const end = Date.now();
-                    let seconds = Math.floor((end - start) / 1000);
-                    console.log(`Time elapsed ${Math.floor((seconds / 60) % 60)} minutes and ${seconds % 60} seconds`);
+                    const seconds = end - start / 1000;
+                    console.log(`Time elapsed ${Math.floor((seconds / 60) % 60)} minutes and ${(seconds % 60).toFixed(2)} seconds`);
                 });
             }).catch((e) => {
                 if (e) {
