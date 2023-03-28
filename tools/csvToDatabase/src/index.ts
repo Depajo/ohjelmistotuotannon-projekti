@@ -1,5 +1,6 @@
 import mysql from "mysql";
 import * as fsPromise from "fs/promises";
+import dotenv from "dotenv";
 
 const start = Date.now();
 
@@ -18,11 +19,12 @@ type Postal = {
     munincipality: number;
 }
 
+dotenv.config();
 var connection = mysql.createConnection({
-    host: "mydb.tamk.fi",
-    user: "cgotky",
-    password: "d4t4B4s3",
-    database: "dbcgotky3"
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE
 });
 
 connection.connect((err) => {
