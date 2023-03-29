@@ -1,9 +1,10 @@
 import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, Platform, TouchableOpacity} from 'react-native';
-import Tts from 'react-native-tts';
 import {request, PERMISSIONS, check, RESULTS} from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
-import axios from 'axios';
+import speak from '../Tools/Speak';
+import fetchLocation from '../Tools/Fetch';
+import {ios} from '../Tools/Permission';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
@@ -13,22 +14,33 @@ const MainScreen = () => {
   const [udpateLocation, setUpdateLocation] = React.useState(null);
 
   useEffect(() => {
+    askPermission();
+
+    if (katu != null) {
+      speak(address.road).catch(error => {
+        console.log(error);
+      });
+    }
+  }, [katu]);
+
+  const askPermission = () => {
     if (Platform.OS === 'ios') {
-      ios();
+      setPermissions(ios());
     }
     if (Platform.OS === 'android') {
-      android();
+      setPermissions(android());
     }
-
-    speak();
-  }, [katu]);
+  };
 
   const onOff = () => {
     console.log('onOff');
     if (udpate === 'Not fetched') {
-      console.log('fetching location');
       styles.MyButton.backgroundColor = 'green';
-      speak();
+      if (katu != null) {
+        speak(address.road).catch(error => {
+          console.log(error);
+        });
+      }
       setUpdate('fetching');
       setUpdateLocation(
         setInterval(() => {
@@ -37,18 +49,24 @@ const MainScreen = () => {
       );
     } else {
       styles.MyButton.backgroundColor = 'red';
-      console.log('not fetching location');
       clearInterval(udpateLocation);
       setUpdate('Not fetched');
     }
   };
 
   const getLocation = () => {
-    if (permissions === RESULTS.GRANTED) {
+    if (permissions === 'granted') {
       Geolocation.getCurrentPosition(
         position => {
           // console.log(position);
-          fetchLocation(position.coords.longitude, position.coords.latitude);
+          fetchLocation(position.coords.longitude, position.coords.latitude)
+            .then(response => {
+              setAddress(response.data.address);
+              setKatu(response.data.address.road);
+            })
+            .catch(error => {
+              console.log(error);
+            });
         },
         error => {
           console.log(error);
@@ -58,92 +76,46 @@ const MainScreen = () => {
     }
   };
 
-  const fetchLocation = (longitude, latitude) => {
-    axios
-      .get(
-        'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' +
-          latitude +
-          '&lon=' +
-          longitude,
-      )
-      .then(response => {
-        // console.log(response.data.address);
-        setAddress(response.data.address);
-        setKatu(response.data.address.road);
-      })
-      .catch(error => {
-        console.log(error.message);
-      });
+  // const ios = () => {
+  //   if (Platform.OS === 'ios') {
+  //     check(PERMISSIONS.IOS.LOCATION_ALWAYS).then(result => {
+  //       setPermissions(result);
+  //       console.log(result);
+  //     });
+  //   }
 
-    // console.log('fetching location');
-  };
+  //   try {
+  //     if (permissions !== RESULTS.GRANTED && Platform.OS === 'ios') {
+  //       request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(result => {
+  //         setPermissions(result);
+  //         console.log(result);
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  const ios = () => {
-    if (Platform.OS === 'ios') {
-      check(PERMISSIONS.IOS.LOCATION_ALWAYS).then(result => {
-        setPermissions(result);
-        console.log(result);
-      });
-    }
+  // const android = () => {
+  //   if (Platform.OS === 'android') {
+  //     check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
+  //       setPermissions(result);
+  //       console.log(result);
+  //     });
+  //   }
+  //   try {
+  //     if (permissions !== RESULTS.GRANTED && Platform.OS === 'android') {
+  //       request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
+  //         setPermissions(result);
+  //         console.log(result);
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-    try {
-      if (permissions !== RESULTS.GRANTED && Platform.OS === 'ios') {
-        request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(result => {
-          setPermissions(result);
-          console.log(result);
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const android = () => {
-    if (Platform.OS === 'android') {
-      check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
-        setPermissions(result);
-        console.log(result);
-      });
-    }
-    try {
-      if (permissions !== RESULTS.GRANTED && Platform.OS === 'android') {
-        request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
-          setPermissions(result);
-          console.log(result);
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const speak = () => {
-    // console.log('speak');
-
-    if (Platform.OS === 'ios' && katu != null) {
-      Tts.addEventListener('tts-start', event => console.log('start', event));
-      Tts.setDefaultLanguage('fi-FI');
-      Tts.speak(address.road, {
-        iosVoiceId: 'com.apple.ttsbundle.Satu-compact',
-        rate: 0.5,
-      });
-      Tts.addEventListener('tts-finish', event => console.log('finish', event));
-    }
-
-    if (Platform.OS === 'android' && katu != null) {
-      Tts.addEventListener('tts-start', event => console.log('start', event));
-      Tts.setDefaultLanguage('fi-FI');
-      Tts.speak(address.road, {
-        androidParams: {
-          KEY_PARAM_PITCH: 1,
-          KEY_PARAM_STREAM: 'STREAM_MUSIC',
-        },
-      });
-      Tts.addEventListener('tts-finish', event => console.log('finish', event));
-    }
-  };
-
-  if (permissions == RESULTS.GRANTED) {
+  if (permissions === 'granted') {
     return (
       <View style={styles.container}>
         {address != null ? (
