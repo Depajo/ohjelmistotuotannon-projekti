@@ -14,7 +14,7 @@ CREATE TABLE kunta (
 
 CREATE TABLE alue (
     alue_id INT AUTO_INCREMENT,
-    postinumero VARCHAR(5),
+    postinumero VARCHAR(5) UNIQUE,
     kunta_id INT,
     PRIMARY KEY (alue_id),
     FOREIGN KEY (kunta_id) REFERENCES kunta(kunta_id)
