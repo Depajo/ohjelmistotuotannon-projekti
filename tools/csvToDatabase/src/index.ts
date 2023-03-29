@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 const start = Date.now();
 
-type Data = {
+interface Data {
     region_id: number;
     munincipality: number;
     street: string;
@@ -14,7 +14,7 @@ type Data = {
     lon: number;
 }
 
-type Postal = {
+interface Postal {
     postalCode: string;
     munincipality: number;
 }
@@ -35,11 +35,12 @@ connection.connect((err) => {
     console.log("Connected");
 });
 
-let streets : Data[] = [];
+let args: string[] = process.argv.slice(2);
+let streets: Data[] = [];
 let postalCodes = new Map<string, Postal>();
 
 async function readFile() {
-    const file = await fsPromise.open("./src/Tampere_kadut.csv", "r");
+    const file = await fsPromise.open(`./resources/${args[0]}`, "r");
     for await (const line of file.readLines()) {
         let lineSplit : string[] = line.split(",");
         streets.push({
@@ -65,7 +66,7 @@ readFile().then(() => {
         if (err) {
             throw err;
         }
-        connection.query("INSERT INTO maakunta SET aluenumero = 5, maakunta = 'Pirkanmaa'", (error, results) => {
+        connection.query("INSERT INTO maakunta SET aluenumero = ?, maakunta = ?", [streets[0].region_id, args[1]], (error, results) => {
             if (error) {
                 return connection.rollback(() => {
                     throw error;
@@ -77,14 +78,14 @@ readFile().then(() => {
             console.log(`Time elapsed ${Math.floor((seconds / 60) % 60)} minutes and ${(seconds % 60).toFixed(2)} seconds`);
         });
 
-        connection.query("INSERT INTO kunta SET kunta_id = 837, aluenumero = 5, kunta = 'Tampere'", (error, results) => {
+        connection.query("INSERT INTO kunta SET kunta_id = ?, aluenumero = ?, kunta = ?", [streets[0].munincipality, streets[0].region_id, args[2]], (error, results) => {
             if (error) {
                 return connection.rollback(() => {
                     throw error;
                 });
             }
             const step2 = Date.now();
-            const seconds : number = (step2 - start) / 1000;
+            const seconds: number = (step2 - start) / 1000;
             console.log("Kunta done!");
             console.log(`Time elapsed ${Math.floor((seconds / 60) % 60)} minutes and ${(seconds % 60).toFixed(2)} seconds`);
         });
@@ -106,7 +107,7 @@ readFile().then(() => {
 
         Promise.all(queryPromises).then(() => {
             const step3 = Date.now();
-            const seconds : number = (step3 - start) / 1000;
+            const seconds: number = (step3 - start) / 1000;
             console.log("Alue done!");
             console.log(`Time elapsed ${Math.floor((seconds / 60) % 60)} minutes and ${(seconds % 60).toFixed(2)} seconds`);
             queryPromises.length = 0;
@@ -120,7 +121,7 @@ readFile().then(() => {
                             if (selectError) {
                                 reject(selectError);
                             } else {
-                                let areaNumber : number = selectResults[0].alue_id;
+                                let areaNumber: number = selectResults[0].alue_id;
                                 insertParams.unshift(areaNumber);
                                 connection.query(insertQuery, insertParams, (insertError, insertResults) => {
                                     if (insertError) {

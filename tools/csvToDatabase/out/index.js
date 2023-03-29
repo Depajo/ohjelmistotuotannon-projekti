@@ -44,10 +44,11 @@ connection.connect((err) => {
     }
     console.log("Connected");
 });
+let args = process.argv.slice(2);
 let streets = [];
 let postalCodes = new Map();
 async function readFile() {
-    const file = await fsPromise.open("./src/Tampere_kadut.csv", "r");
+    const file = await fsPromise.open(`./resources/${args[0]}`, "r");
     for await (const line of file.readLines()) {
         let lineSplit = line.split(",");
         streets.push({
@@ -70,7 +71,7 @@ readFile().then(() => {
         if (err) {
             throw err;
         }
-        connection.query("INSERT INTO maakunta SET aluenumero = 5, maakunta = 'Pirkanmaa'", (error, results) => {
+        connection.query("INSERT INTO maakunta SET aluenumero = ?, maakunta = ?", [streets[0].region_id, args[1]], (error, results) => {
             if (error) {
                 return connection.rollback(() => {
                     throw error;
@@ -81,7 +82,7 @@ readFile().then(() => {
             console.log("Maakunta done!");
             console.log(`Time elapsed ${Math.floor((seconds / 60) % 60)} minutes and ${(seconds % 60).toFixed(2)} seconds`);
         });
-        connection.query("INSERT INTO kunta SET kunta_id = 837, aluenumero = 5, kunta = 'Tampere'", (error, results) => {
+        connection.query("INSERT INTO kunta SET kunta_id = ?, aluenumero = ?, kunta = ?", [streets[0].munincipality, streets[0].region_id, args[2]], (error, results) => {
             if (error) {
                 return connection.rollback(() => {
                     throw error;
