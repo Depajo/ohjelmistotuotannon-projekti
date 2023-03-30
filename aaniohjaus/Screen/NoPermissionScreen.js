@@ -1,7 +1,11 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Linking, Button} from 'react-native';
 
 const NoPermissionScreen = () => {
+  const openSettings = () => {
+    Linking.openURL('app-settings:privacy?path=LOCATION');
+  };
+
   return (
     <View style={styles.container}>
       <Text
@@ -13,6 +17,7 @@ const NoPermissionScreen = () => {
         }}>
         Anna lupa käyttää sijaintia kun käytät sovellust
       </Text>
+      <Button title="Asetukset" onPress={openSettings} />
     </View>
   );
 };
