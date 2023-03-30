@@ -4,7 +4,11 @@ import {Platform} from 'react-native';
 const ios = async () => {
   let ask;
   if (Platform.OS === 'ios') {
-    ask = await check(PERMISSIONS.IOS.LOCATION_ALWAYS);
+    if (ask !== RESULTS.GRANTED) {
+      ask = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+    } else {
+      ask = await check(PERMISSIONS.IOS.LOCATION_ALWAYS);
+    }
   }
 
   try {
