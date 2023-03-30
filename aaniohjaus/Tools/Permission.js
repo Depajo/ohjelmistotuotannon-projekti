@@ -1,19 +1,17 @@
 import {request, PERMISSIONS, check, RESULTS} from 'react-native-permissions';
 import {Platform} from 'react-native';
 
-const ios = permissions => {
+const ios = async permissions => {
   if (Platform.OS === 'ios') {
-    check(PERMISSIONS.IOS.LOCATION_ALWAYS).then(result => {
-      console.log(result);
-      return result;
-    });
+    let ask = await check(PERMISSIONS.IOS.LOCATION_ALWAYS);
+    return ask;
   }
 
   try {
     if (permissions !== RESULTS.GRANTED && Platform.OS === 'ios') {
-      request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(result => {
-        return result;
-      });
+      const result = await request(PERMISSIONS.IOS.LOCATION_ALWAYS);
+      console.log('Result:', result);
+      return result;
     }
   } catch (error) {
     console.log(error);
@@ -22,15 +20,13 @@ const ios = permissions => {
 
 const android = async permissions => {
   if (Platform.OS === 'android') {
-    check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
-      return result;
-    });
+    let ask = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+    return ask;
   }
   try {
     if (permissions !== RESULTS.GRANTED && Platform.OS === 'android') {
-      request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
-        return result;
-      });
+      let result = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+      return result;
     }
   } catch (error) {
     console.log(error);
