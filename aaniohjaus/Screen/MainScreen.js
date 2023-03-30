@@ -96,24 +96,24 @@ const MainScreen = () => {
   //   }
   // };
 
-  // const android = () => {
-  //   if (Platform.OS === 'android') {
-  //     check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
-  //       setPermissions(result);
-  //       console.log(result);
-  //     });
-  //   }
-  //   try {
-  //     if (permissions !== RESULTS.GRANTED && Platform.OS === 'android') {
-  //       request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
-  //         setPermissions(result);
-  //         console.log(result);
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const android = () => {
+    if (Platform.OS === 'android') {
+      check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
+        setPermissions(result);
+        console.log(result);
+      });
+    }
+    try {
+      if (permissions !== RESULTS.GRANTED && Platform.OS === 'android') {
+        request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
+          setPermissions(result);
+          console.log(result);
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   if (permissions === 'granted') {
     return (
