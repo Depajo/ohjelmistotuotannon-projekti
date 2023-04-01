@@ -502,6 +502,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = aaniohjaus/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Ääniohjaus";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -535,6 +536,7 @@
 				DEVELOPMENT_TEAM = 6U9U5HATHY;
 				INFOPLIST_FILE = aaniohjaus/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Ääniohjaus";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

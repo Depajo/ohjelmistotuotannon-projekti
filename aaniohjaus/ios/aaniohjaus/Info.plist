@@ -36,11 +36,11 @@
 		</dict>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>Ääniohjaus tarvitsee sijaintitietoja jotta sovellus pystyy paikantamaan ja kertomaan ääneen kadun nimen ja osoitteen jossa olet.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>YO</string>
+	<string>Ääniohjaus tarvitsee sijaintitietoja jotta sovellus pystyy paikantamaan ja kertomaan ääneen kadun nimen ja osoitteen jossa olet.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Ääniohjaus tarvitsee sijaintitietoja jotta sovellus pystyy paikantamaan ja kertomaan ääneen kadun nimen ja osoitteen jossa olet.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
