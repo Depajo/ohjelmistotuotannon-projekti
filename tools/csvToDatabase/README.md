@@ -30,11 +30,13 @@ DB_PASSWORD="<your password>"
 2. Run the script:<br />
 `node out/index.js <csv-filename> <region> <munincipality>`
 
-__!!!DISCLAIMER!!!__<br />
+__DISCLAIMER!__<br />
+!!!<br />
 This script assumes that before running, the .csv file is properly filtered to have specific data structure. The data structure is as follows:
 `region_id,munincipality_id,street,street_number,postal_code,latitude,longitude`. **There cannot be multiple region id's and munincipalities as this script only supports
 only one region id and munincipality on the command line. _If there are multiple region id's or munincipalities they won't match with your given region and
-munincipality._ Only use .csv files that have only one region id and munincipality id (see example in `resources/Tampere_kadut.csv`)**
+munincipality._ Only use .csv files that have only one region id and munincipality id (see example in `resources/Tampere_kadut.csv`)**<br />
+!!!
 
 Depending on how many lines there are in the .csv file, this script will take time. After every group of data is done inserting data, there is a timestap for how long it
 took. Usually the last group (streets) take the longest and in extreme cases may take up to several tens of minutes in executing the code. If it seems that the code 
