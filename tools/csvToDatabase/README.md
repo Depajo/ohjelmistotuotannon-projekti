@@ -8,13 +8,13 @@ To use this tool, Node has to be installed on the computer. This tool was tested
 
 ### Installation
 
-1. Clone the whole repository to your computer:
+1. Clone the whole repository to your computer:<br />
 `git clone https://github.com/Depajo/ohjelmistotuotannon-projekti`
 
-2. Navigate to the root directory of the tool:
+2. Navigate to the root directory of the tool:<br />
 `cd tools/csvToDatabase`
 
-3. Install all modules used in the script: 
+3. Install all modules used in the script:<br /> 
 `npm install`
 
 ### Usage
@@ -27,10 +27,10 @@ DB_USER="<your username>"
 DB_PASSWORD="<your password>"
 ```
 
-2. Run the script:
+2. Run the script:<br />
 `node out/index.js <csv-filename> <region> <munincipality>`
 
-__!!!DISCLAIMER!!!__
+__!!!DISCLAIMER!!!__<br />
 This script assumes that before running, the .csv file is properly filtered to have specific data structure. The data structure is as follows:
 `region_id,munincipality_id,street,street_number,postal_code,latitude,longitude`. **There cannot be multiple region id's and munincipalities as this script only supports
 only one region id and munincipality on the command line. _If there are multiple region id's or munincipalities they won't match with your given region and
