@@ -49,7 +49,7 @@ an sql error, the insert queries will rollback and no changes will be committed
 
 This tool makes use of these modules:
 
-[dotenv](https://github.com/motdotla/dotenv): Used to store database configuration that will be used when connection to the database.
+[dotenv](https://github.com/motdotla/dotenv): Used to store database configuration that will be used when connection to the database.<br />
 [mysql](https://github.com/mysqljs/mysql): Main module for making a connection to and querying the database.
 
 ### License
