@@ -1,6 +1,6 @@
 # CSV to Database
 
-### A tool for tranferring data from a .csv-file to a database
+### A tool for transferring data from a .csv-file to a database
 
 This directory contains a tool for importing data from CSV files into a database. The tool is intended to be used as part of a larger software project, and it assumes that the target database schema has already been created. The exact database schema can be found in `/tools/sql_create_tables.sql`
 
