@@ -10,7 +10,6 @@ const fetchLocation = (longitude, latitude) => {
           longitude,
       )
       .then(response => {
-        // console.log(response.data.address);
         resolve(response);
       })
       .catch(error => {
