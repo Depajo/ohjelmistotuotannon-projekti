@@ -53,8 +53,9 @@ const SpeakLogo = ({speeking}) => {
 
 const styles = StyleSheet.create({
   ImageStyle: {
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 250,
+    margin: 20,
   },
 });
 

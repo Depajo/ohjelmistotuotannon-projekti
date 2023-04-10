@@ -1,22 +1,26 @@
 import React, {useEffect} from 'react';
-import {Platform} from 'react-native';
+import {Image, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import speak from '../Tools/Speak';
 import fetchLocation from '../Tools/Fetch';
 import {ios, android} from '../Tools/Permission';
+import YesPermissionScreenTwo from './YesPermissionScreen';
 import NoPermissionScreen from './NoPermissionScreen';
-import YesPermissionScreen from './YesPermissionScreen';
-import YesPermissionScreenTwo from './YesPermissionScreenTwo';
+import '../Components/MuteButton';
+import MuteButton from '../Components/MuteButton';
+import SettingsButton from '../Components/SettingsButton';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
   const [katu, setKatu] = React.useState(null);
   const [permissions, setPermissions] = React.useState(null);
   const [speeking, setSpeeking] = React.useState(false);
+  const [mute, setMute] = React.useState(false);
 
   useEffect(() => {
     askPermission();
-    if (katu != null) {
+    console.log(mute);
+    if (katu != null && mute === false) {
       setSpeeking(true);
       speak(address.road)
         .then(() => {
@@ -28,7 +32,7 @@ const MainScreen = () => {
           console.log(error);
         });
     }
-  }, [katu]);
+  }, [katu, mute]);
 
   const askPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -64,15 +68,48 @@ const MainScreen = () => {
 
   if (permissions === 'granted') {
     return (
-      <YesPermissionScreenTwo
-        address={address}
-        getLocation={getLocation}
-        speeking={speeking}
-      />
+      <SafeAreaView>
+        <View style={styles.container}>
+          <View
+            style={{
+              flex: 0.6,
+              flexDirection: 'row',
+              backgroundColor: '#585858',
+            }}>
+            <View style={{flex: 1, alignItems: 'flex-start', margin: 10}}>
+              <SettingsButton />
+            </View>
+            <View style={{flex: 1, alignItems: 'flex-end', margin: 10}}>
+              <MuteButton mute={mute} setMute={setMute} />
+            </View>
+          </View>
+          <View style={{flex: 7}}>
+            <YesPermissionScreenTwo
+              address={address}
+              getLocation={getLocation}
+              speeking={speeking}
+            />
+          </View>
+        </View>
+      </SafeAreaView>
     );
   } else {
-    return <NoPermissionScreen />;
+    return (
+      <View>
+        <NoPermissionScreen permissions={permissions} />
+      </View>
+    );
   }
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default MainScreen;
