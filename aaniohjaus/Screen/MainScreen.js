@@ -1,5 +1,13 @@
 import React, {useEffect} from 'react';
-import {Image, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
+import {
+  Image,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import speak from '../Tools/Speak';
 import fetchLocation from '../Tools/Fetch';
@@ -9,6 +17,7 @@ import NoPermissionScreen from './NoPermissionScreen';
 import '../Components/MuteButton';
 import MuteButton from '../Components/MuteButton';
 import SettingsButton from '../Components/SettingsButton';
+import SpeakAll from '../Components/SpeakAll';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
@@ -90,6 +99,7 @@ const MainScreen = () => {
               speeking={speeking}
             />
           </View>
+          <SpeakAll setSpeeking={setSpeeking} address={address} />
         </View>
       </SafeAreaView>
     );
