@@ -1,22 +1,32 @@
 import React, {useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import SpeakLogo from '../Components/SpeakLogo';
+import {Appearance} from 'react-native';
 
-const YesPermissionScreenTwo = ({address, onOff}) => {
+const YesPermissionScreenTwo = ({address, getLocation, speeking}) => {
+  const colorScheme = Appearance.getColorScheme();
   useEffect(() => {
-    onOff();
+    if (colorScheme === 'dark') {
+      styles.TextStyle.color = 'white';
+    } else {
+      styles.TextStyle.color = 'black';
+    }
+    setInterval(() => {
+      getLocation();
+    }, 1000);
   }, []);
 
   return (
     <View style={styles.container}>
       {address != null ? (
-        <Text style={styles.TextStyle}>
-          {address.road + ' ' + address.house_number}
-        </Text>
+        <View>
+          <Text style={styles.TextStyle}>{address.road}</Text>
+          <Text style={styles.TextStyle}>{address.house_number}</Text>
+        </View>
       ) : (
         <Text style={styles.TextStyle}>Ei sijaintia</Text>
       )}
-      <SpeakLogo speeking={false} />
+      <SpeakLogo speeking={speeking} />
     </View>
   );
 };

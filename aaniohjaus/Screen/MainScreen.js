@@ -12,14 +12,21 @@ const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
   const [katu, setKatu] = React.useState(null);
   const [permissions, setPermissions] = React.useState(null);
+  const [speeking, setSpeeking] = React.useState(false);
 
   useEffect(() => {
     askPermission();
-
     if (katu != null) {
-      speak(address.road).catch(error => {
-        console.log(error);
-      });
+      setSpeeking(true);
+      speak(address.road)
+        .then(() => {
+          setTimeout(() => {
+            setSpeeking(false);
+          }, 1500);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }, [katu]);
 
@@ -32,12 +39,6 @@ const MainScreen = () => {
       let permissions = await android();
       setPermissions(permissions);
     }
-  };
-
-  const onOff = () => {
-    setInterval(() => {
-      getLocation();
-    }, 1000);
   };
 
   const getLocation = () => {
@@ -62,7 +63,13 @@ const MainScreen = () => {
   };
 
   if (permissions === 'granted') {
-    return <YesPermissionScreenTwo address={address} onOff={onOff} />;
+    return (
+      <YesPermissionScreenTwo
+        address={address}
+        getLocation={getLocation}
+        speeking={speeking}
+      />
+    );
   } else {
     return <NoPermissionScreen />;
   }
