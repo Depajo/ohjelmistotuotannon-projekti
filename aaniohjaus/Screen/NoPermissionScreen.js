@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Linking,
-  Button,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-import {ios} from '../Tools/Permission';
+import {View, Linking, Alert} from 'react-native';
 
 const NoPermissionScreen = () => {
   const openSettings = () => {
@@ -16,18 +8,6 @@ const NoPermissionScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text
-        style={{
-          color: 'red',
-          fontSize: 30,
-          margin: 10,
-          textAlign: 'center',
-        }}>
-        Anna lupa käyttää sijaintia kun käytät sovellust
-      </Text>
-      <TouchableOpacity style={styles.touchableOpacity} onPress={openSettings}>
-        <Text style={styles.text}>OK</Text>
-      </TouchableOpacity>
       {/* {Alert.alert(
         'Anna lupa käyttää sijaintia kun käytät sovellust',
         'Sijaintiasetukset',
@@ -37,7 +17,7 @@ const NoPermissionScreen = () => {
             onPress: () => openSettings(),
           },
         ],
-        {cancelable: true},
+        {cancelable: false},
       )} */}
     </View>
   );

@@ -6,13 +6,12 @@ import fetchLocation from '../Tools/Fetch';
 import {ios, android} from '../Tools/Permission';
 import NoPermissionScreen from './NoPermissionScreen';
 import YesPermissionScreen from './YesPermissionScreen';
+import YesPermissionScreenTwo from './YesPermissionScreenTwo';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
   const [katu, setKatu] = React.useState(null);
   const [permissions, setPermissions] = React.useState(null);
-  const [udpate, setUpdate] = React.useState('Not fetched');
-  const [udpateLocation, setUpdateLocation] = React.useState(null);
 
   useEffect(() => {
     askPermission();
@@ -36,23 +35,9 @@ const MainScreen = () => {
   };
 
   const onOff = () => {
-    console.log('onOff');
-    if (udpate === 'Not fetched') {
-      if (katu != null) {
-        speak(address.road).catch(error => {
-          console.log(error);
-        });
-      }
-      setUpdate('fetching');
-      setUpdateLocation(
-        setInterval(() => {
-          getLocation();
-        }, 1000),
-      );
-    } else {
-      clearInterval(udpateLocation);
-      setUpdate('Not fetched');
-    }
+    setInterval(() => {
+      getLocation();
+    }, 1000);
   };
 
   const getLocation = () => {
@@ -77,9 +62,7 @@ const MainScreen = () => {
   };
 
   if (permissions === 'granted') {
-    return (
-      <YesPermissionScreen address={address} onOff={onOff} udpate={udpate} />
-    );
+    return <YesPermissionScreenTwo address={address} onOff={onOff} />;
   } else {
     return <NoPermissionScreen />;
   }
