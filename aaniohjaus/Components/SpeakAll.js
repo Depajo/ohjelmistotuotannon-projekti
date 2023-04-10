@@ -7,13 +7,15 @@ const SpeakAll = ({setSpeeking, address}) => {
     <TouchableOpacity
       style={styles.button}
       onPress={() => {
-        setSpeeking(true);
-        speak(
-          `${address.road} ${address.house_number} ${address.postcode} ${address.city}`,
-        );
-        setTimeout(() => {
-          setSpeeking(false);
-        }, 4500);
+        if (address !== null) {
+          setSpeeking(true);
+          speak(
+            `${address.road} ${address.house_number} ${address.postcode} ${address.city}`,
+          );
+          setTimeout(() => {
+            setSpeeking(false);
+          }, 4500);
+        }
       }}>
       <Text style={styles.TextStyle}>TOISTA OSOITE</Text>
     </TouchableOpacity>

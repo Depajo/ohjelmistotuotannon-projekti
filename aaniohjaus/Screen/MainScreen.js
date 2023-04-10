@@ -1,13 +1,5 @@
 import React, {useEffect} from 'react';
-import {
-  Image,
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Platform, SafeAreaView, StyleSheet, View} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import speak from '../Tools/Speak';
 import fetchLocation from '../Tools/Fetch';
@@ -18,6 +10,7 @@ import '../Components/MuteButton';
 import MuteButton from '../Components/MuteButton';
 import SettingsButton from '../Components/SettingsButton';
 import SpeakAll from '../Components/SpeakAll';
+import {Appearance} from 'react-native';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
@@ -27,6 +20,12 @@ const MainScreen = () => {
   const [mute, setMute] = React.useState(false);
 
   useEffect(() => {
+    const colorSchema = Appearance.getColorScheme();
+    if (colorSchema === 'dark') {
+      styles.menu.backgroundColor = '#7C7C7C';
+    } else {
+      styles.menu.backgroundColor = '#2C2C2C';
+    }
     askPermission();
     console.log(mute);
     if (katu != null && mute === false) {
@@ -77,31 +76,26 @@ const MainScreen = () => {
 
   if (permissions === 'granted') {
     return (
-      <SafeAreaView>
-        <View style={styles.container}>
-          <View
-            style={{
-              flex: 0.6,
-              flexDirection: 'row',
-              backgroundColor: '#585858',
-            }}>
-            <View style={{flex: 1, alignItems: 'flex-start', margin: 10}}>
-              <SettingsButton />
-            </View>
-            <View style={{flex: 1, alignItems: 'flex-end', margin: 10}}>
-              <MuteButton mute={mute} setMute={setMute} />
-            </View>
+      <View style={styles.container}>
+        <SafeAreaView style={styles.SafeAreaView} />
+        <View style={styles.menu}>
+          <View style={{flex: 1, alignItems: 'flex-start', margin: 10}}>
+            <SettingsButton />
           </View>
-          <View style={{flex: 7}}>
-            <YesPermissionScreenTwo
-              address={address}
-              getLocation={getLocation}
-              speeking={speeking}
-            />
+          <View style={{flex: 1, alignItems: 'flex-end', margin: 10}}>
+            <MuteButton mute={mute} setMute={setMute} />
           </View>
-          <SpeakAll setSpeeking={setSpeeking} address={address} />
         </View>
-      </SafeAreaView>
+        <View style={{flex: 7}}>
+          <YesPermissionScreenTwo
+            address={address}
+            getLocation={getLocation}
+            speeking={speeking}
+          />
+        </View>
+        <SpeakAll setSpeeking={setSpeeking} address={address} />
+        <SafeAreaView />
+      </View>
     );
   } else {
     return (
@@ -119,6 +113,14 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  menu: {
+    flex: 0.6,
+    flexDirection: 'row',
+    backgroundColor: '#585858',
+  },
+  SafeAreaView: {
+    backgroundColor: '#585858',
   },
 });
 

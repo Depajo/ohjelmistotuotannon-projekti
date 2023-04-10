@@ -11,24 +11,24 @@ const MuteButton = ({mute, setMute}) => {
 
   useState(() => {
     if (Appearance.getColorScheme() === 'dark') {
-      setIcon(kaijutin);
+      setIcon(kaijutin_mute_musta);
     } else {
-      setIcon(kaijutin_musta);
+      setIcon(kaijutin);
     }
   }, []);
 
   const changeIcon = () => {
     if (mute) {
       if (Appearance.getColorScheme() === 'dark') {
-        setIcon(kaijutin);
-      } else {
         setIcon(kaijutin_musta);
+      } else {
+        setIcon(kaijutin);
       }
     } else {
       if (Appearance.getColorScheme() === 'dark') {
-        setIcon(kaijutin_mute);
-      } else {
         setIcon(kaijutin_mute_musta);
+      } else {
+        setIcon(kaijutin_mute);
       }
     }
     setMute(!mute);
@@ -42,9 +42,6 @@ const MuteButton = ({mute, setMute}) => {
           style={{
             width: 55,
             height: 36,
-            // position: 'relative',
-            // top: 20,
-            // left: 205,
           }}
         />
       </TouchableOpacity>

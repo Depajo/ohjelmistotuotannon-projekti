@@ -8,9 +8,9 @@ const SettingsButton = () => {
   const [icon, setIcon] = React.useState(asetukset_valkoinen);
   useEffect(() => {
     if (Appearance.getColorScheme() === 'dark') {
-      setIcon(asetukset_valkoinen);
-    } else {
       setIcon(asetukset_musta);
+    } else {
+      setIcon(asetukset_valkoinen);
     }
   }, []);
 
