@@ -11,7 +11,7 @@ const MuteButton = ({mute, setMute}) => {
 
   useState(() => {
     if (Appearance.getColorScheme() === 'dark') {
-      setIcon(kaijutin_mute_musta);
+      setIcon(kaijutin_musta);
     } else {
       setIcon(kaijutin);
     }

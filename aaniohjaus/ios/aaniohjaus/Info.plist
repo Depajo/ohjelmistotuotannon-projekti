@@ -42,7 +42,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Ääniohjaus tarvitsee sijaintitietoja jotta sovellus pystyy paikantamaan ja kertomaan ääneen kadun nimen ja osoitteen jossa olet.</string>
 	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
+	<string>LaunchScreen.storyboard</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
