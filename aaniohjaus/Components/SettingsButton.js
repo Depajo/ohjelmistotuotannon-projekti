@@ -1,16 +1,16 @@
 import React, {useEffect} from 'react';
 import {View, Text, TouchableOpacity, Image, Linking} from 'react-native';
 import {Appearance} from 'react-native';
-import asetukset_valkoinen from '../Assets/asetukset_valkoinen.png';
-import asetukset_musta from '../Assets/asetukset_musta.png';
+import settings_valkoinen from '../Assets/settings_valkoinen.png';
+import settings_musta from '../Assets/settings_musta.png';
 
 const SettingsButton = () => {
-  const [icon, setIcon] = React.useState(asetukset_valkoinen);
+  const [icon, setIcon] = React.useState(settings_valkoinen);
   useEffect(() => {
     if (Appearance.getColorScheme() === 'dark') {
-      setIcon(asetukset_musta);
+      setIcon(settings_musta);
     } else {
-      setIcon(asetukset_valkoinen);
+      setIcon(settings_valkoinen);
     }
   }, []);
 
