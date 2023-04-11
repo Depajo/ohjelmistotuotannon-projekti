@@ -94,7 +94,7 @@ const MainScreen = () => {
           />
         </View>
         <View style={{flex: 2}}>
-          {/* <SpeakAll setSpeeking={setSpeeking} address={address} /> */}
+          <SpeakAll setSpeeking={setSpeeking} address={address} />
         </View>
         <SafeAreaView />
       </View>

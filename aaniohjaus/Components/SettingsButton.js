@@ -27,7 +27,7 @@ const SettingsButton = () => {
     }
 
     if (Platform.OS === 'android') {
-      // Linking.openSettings();
+      Linking.openSettings();
     }
   };
 
