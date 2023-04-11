@@ -1,5 +1,12 @@
 import React, {useEffect} from 'react';
-import {View, Text, TouchableOpacity, Image, Linking} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Linking,
+  Platform,
+} from 'react-native';
 import {Appearance} from 'react-native';
 import asetukset_valkoinen from '../Assets/asetukset_valkoinen.png';
 import asetukset_musta from '../Assets/asetukset_musta.png';
@@ -15,7 +22,13 @@ const SettingsButton = () => {
   }, []);
 
   const openSettings = () => {
-    Linking.openURL('app-settings:privacy?path=LOCATION');
+    if (Platform.OS === 'ios') {
+      Linking.openURL('app-settings:privacy?path=LOCATION');
+    }
+
+    if (Platform.OS === 'android') {
+      Linking.openSettings();
+    }
   };
 
   return (

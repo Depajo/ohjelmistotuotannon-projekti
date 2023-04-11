@@ -93,7 +93,9 @@ const MainScreen = () => {
             speeking={speeking}
           />
         </View>
-        <SpeakAll setSpeeking={setSpeeking} address={address} />
+        <View style={{flex: 2}}>
+          <SpeakAll setSpeeking={setSpeeking} address={address} />
+        </View>
         <SafeAreaView />
       </View>
     );
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   menu: {
-    flex: 0.6,
+    flex: 0.7,
     flexDirection: 'row',
     backgroundColor: '#585858',
   },
