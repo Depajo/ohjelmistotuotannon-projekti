@@ -14,7 +14,7 @@ import {Appearance} from 'react-native';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
-  const [katu, setKatu] = React.useState(null);
+  const [street, setStreet] = React.useState(null);
   const [permissions, setPermissions] = React.useState(null);
   const [speeking, setSpeeking] = React.useState(false);
   const [mute, setMute] = React.useState(false);
@@ -22,13 +22,17 @@ const MainScreen = () => {
   useEffect(() => {
     const colorSchema = Appearance.getColorScheme();
     if (colorSchema === 'dark') {
-      styles.menu.backgroundColor = '#7C7C7C';
+      styles.menu.backgroundColor = '#0d0d0d';
+      styles.container.backgroundColor = '#3a3a3a';
+      styles.safeAreaView.backgroundColor = 'black';
     } else {
-      styles.menu.backgroundColor = '#2C2C2C';
+      styles.menu.backgroundColor = '#292d32';
+      styles.container.backgroundColor = '#f3f2f2';
+      styles.safeAreaView.backgroundColor = '#292d32';
     }
     askPermission();
     console.log(mute);
-    if (katu != null && mute === false) {
+    if (street != null && mute === false) {
       setSpeeking(true);
       speak(address.road)
         .then(() => {
@@ -40,7 +44,7 @@ const MainScreen = () => {
           console.log(error);
         });
     }
-  }, [katu, mute]);
+  }, [street, mute]);
 
   const askPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -60,7 +64,7 @@ const MainScreen = () => {
           fetchLocation(position.coords.longitude, position.coords.latitude)
             .then(response => {
               setAddress(response.data.address);
-              setKatu(response.data.address.road);
+              setStreet(response.data.address.road);
             })
             .catch(error => {
               console.log(error);
@@ -76,28 +80,28 @@ const MainScreen = () => {
 
   if (permissions === 'granted') {
     return (
-      <View style={styles.container}>
-        <SafeAreaView style={styles.SafeAreaView} />
-        <View style={styles.menu}>
-          <View style={{flex: 1, alignItems: 'flex-start', margin: 10}}>
-            <SettingsButton />
+      <SafeAreaView style={styles.safeAreaView}>
+        <View style={styles.container}>
+          <View style={styles.menu}>
+            <View style={{flex: 1, alignItems: 'flex-start', margin: 10}}>
+              <SettingsButton />
+            </View>
+            <View style={{flex: 1, alignItems: 'flex-end', margin: 10}}>
+              <MuteButton mute={mute} setMute={setMute} />
+            </View>
           </View>
-          <View style={{flex: 1, alignItems: 'flex-end', margin: 10}}>
-            <MuteButton mute={mute} setMute={setMute} />
+          <View style={{flex: 7}}>
+            <YesPermissionScreenTwo
+              address={address}
+              getLocation={getLocation}
+              speeking={speeking}
+            />
+          </View>
+          <View style={{flex: 2}}>
+            <SpeakAll setSpeeking={setSpeeking} address={address} />
           </View>
         </View>
-        <View style={{flex: 7}}>
-          <YesPermissionScreenTwo
-            address={address}
-            getLocation={getLocation}
-            speeking={speeking}
-          />
-        </View>
-        <View style={{flex: 2}}>
-          <SpeakAll setSpeeking={setSpeeking} address={address} />
-        </View>
-        <SafeAreaView />
-      </View>
+      </SafeAreaView>
     );
   } else {
     return (
@@ -115,14 +119,16 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#3a3a3a',
   },
   menu: {
     flex: 0.7,
     flexDirection: 'row',
-    backgroundColor: '#585858',
+    backgroundColor: '#0d0d0d',
   },
-  SafeAreaView: {
-    backgroundColor: '#585858',
+
+  safeAreaView: {
+    backgroundColor: 'white',
   },
 });
 

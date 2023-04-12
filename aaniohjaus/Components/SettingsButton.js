@@ -1,23 +1,17 @@
 import React, {useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Linking,
-  Platform,
-} from 'react-native';
+import {View, TouchableOpacity, Image, Linking, Platform} from 'react-native';
 import {Appearance} from 'react-native';
-import asetukset_valkoinen from '../Assets/asetukset_valkoinen.png';
-import asetukset_musta from '../Assets/asetukset_musta.png';
+import settings_white from '../Assets/settings_white.png';
+import settings_black from '../Assets/settings_black.png';
 
 const SettingsButton = () => {
-  const [icon, setIcon] = React.useState(asetukset_valkoinen);
+  const [icon, setIcon] = React.useState(settings_white);
   useEffect(() => {
     if (Appearance.getColorScheme() === 'dark') {
-      setIcon(asetukset_musta);
+      // setIcon(settings_black);
+      setIcon(settings_white);
     } else {
-      setIcon(asetukset_valkoinen);
+      setIcon(settings_white);
     }
   }, []);
 
@@ -47,4 +41,3 @@ const SettingsButton = () => {
 };
 
 export default SettingsButton;
-

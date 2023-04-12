@@ -1,11 +1,5 @@
 import React, {useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import SpeakLogo from '../Components/SpeakLogo';
 import {Appearance} from 'react-native';
 
@@ -33,11 +27,6 @@ const YesPermissionScreen = ({address, getLocation, speeking}) => {
               ? address.house_number
               : 'Ei numeroa'}
           </Text>
-          {/* <Text style={styles.TextStyle}>
-            {'undefined' !== address.house_number
-              ? address.house_number
-              : 'Ei numeroa'}
-          </Text> */}
           <Text style={styles.TextStyle}>{address.postcode}</Text>
           <Text style={styles.TextStyle}>{address.city}</Text>
         </View>

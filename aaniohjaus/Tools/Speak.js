@@ -7,7 +7,7 @@ const speak = address => {
       Tts.addEventListener('tts-start', event => console.log('start', event));
       Tts.setDefaultLanguage('fi-FI');
       Tts.speak(address, {
-        iosVoiceId: 'com.apple.ttsbundle.Satu-compact',
+        iosVoiceId: 'com.apple.ttsbundle.Sauli-compact',
         rate: 0.5,
       });
       Tts.addEventListener('tts-finish', event => console.log('finish', event));

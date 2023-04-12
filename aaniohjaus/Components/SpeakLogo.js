@@ -1,15 +1,15 @@
 import React from 'react';
 import {Image, StyleSheet} from 'react-native';
-import aani_1 from '../Assets/aani_1.png';
-import aani2 from '../Assets/aani2.png';
-import aani_1_valkoinen from '../Assets/aani_1_valkoinen.png';
-import aani2_valkoinen from '../Assets/aani2_valkoinen.png';
+import voice1 from '../Assets/voice1.png';
+import voice2 from '../Assets/voice2.png';
+import voice1_white from '../Assets/voice1_white.png';
+import voice2_white from '../Assets/voice2_white.png';
 import {Appearance} from 'react-native';
 
 const SpeakLogo = ({speeking}) => {
   const colorScheme = Appearance.getColorScheme();
   const [intervalRun, setIntervalRun] = React.useState(null);
-  const [image, setImage] = React.useState(aani_1);
+  const [image, setImage] = React.useState(voice1);
   React.useEffect(() => {
     if (speeking) {
       changeImage();
@@ -19,9 +19,9 @@ const SpeakLogo = ({speeking}) => {
       }
 
       if (colorScheme === 'dark') {
-        setImage(aani_1_valkoinen);
+        setImage(voice1_white);
       } else {
-        setImage(aani_1);
+        setImage(voice1);
       }
     }
   }, [speeking]);
@@ -32,16 +32,16 @@ const SpeakLogo = ({speeking}) => {
       if (change) {
         change = false;
         if (colorScheme === 'dark') {
-          setImage(aani_1_valkoinen);
+          setImage(voice1_white);
         } else {
-          setImage(aani_1);
+          setImage(voice1);
         }
       } else {
         change = true;
         if (colorScheme === 'dark') {
-          setImage(aani2_valkoinen);
+          setImage(voice2_white);
         } else {
-          setImage(aani2);
+          setImage(voice2);
         }
       }
     }, 200);
