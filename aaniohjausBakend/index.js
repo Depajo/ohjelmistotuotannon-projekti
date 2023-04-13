@@ -1,6 +1,6 @@
 const express = require("express");
 // Add when controller is created
-const katutiedotRouter = require("./routes");
+const katutiedotRouter = require("./routes/voicecontrol");
 
 const app = express();
 app.use(express.json());

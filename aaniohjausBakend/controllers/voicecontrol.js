@@ -1,4 +1,4 @@
-const katutiedot = require("./model");
+const katutiedot = require("../models/voicecontrol");
 
 const getKatutiedot = async (req, res) => {
   const response = await katutiedot.findAll();

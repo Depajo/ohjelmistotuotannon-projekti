@@ -1,4 +1,4 @@
-const connection = require("./connection");
+const connection = require("../connection");
 
 ///TÄTÄ PITÄÄ MUOKATA MEIDÄN TIETOKANTAAN
 

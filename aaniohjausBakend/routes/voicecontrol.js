@@ -1,5 +1,5 @@
 const express = require("express");
-const { getKatutiedot, getBy } = require("./controllers");
+const { getKatutiedot, getBy } = require("../controllers/voicecontrol");
 
 const router = express.Router();
 
