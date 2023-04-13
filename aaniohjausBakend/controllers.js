@@ -1,4 +1,4 @@
-const katutiedot = require("./models");
+const katutiedot = require("./model");
 
 const getKatutiedot = async (req, res) => {
   const response = await katutiedot.findAll();
