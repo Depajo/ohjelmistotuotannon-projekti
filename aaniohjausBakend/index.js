@@ -1,15 +1,14 @@
 const express = require("express");
-// Add when controller is created
-const katutiedotRouter = require("./routes");
+const Router = require("./routes/voicecontrol");
+require("dotenv").config();
 
 const app = express();
 app.use(express.json());
 
-// Add when controller is created
-app.use("/api/katutiedot", katutiedotRouter);
+app.use("/api/katutiedot", Router);
 
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.info(`Backend is listening on port ${PORT}`);
+  console.log(`Backend is listening on port ${PORT}`);
 });

@@ -1,7 +1,6 @@
 {
   "name": "aaniohjaus_backend",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
@@ -18,5 +17,6 @@
   "devDependencies": {
     "eslint": "^8.38.0",
     "eslint-plugin-react": "^7.32.2"
-  }
+  },
+  "description": ""
 }
