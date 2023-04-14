@@ -1,11 +1,17 @@
-const connection = require("../connection");
+const connection = require("../connections/voicecontrol");
 
-///TÄTÄ PITÄÄ MUOKATA MEIDÄN TIETOKANTAAN
+/*
+findAll() sisältää yhden testihaun, ellalla työnalla spatial indexin hahmotus, palaan sunnuntaina asiaan
+*/
 
 const aaniohjaus = {
   findAll: () =>
     new Promise((resolve, reject) => {
-      connection.query("SELECT * FROM katutiedot;", (err, result) => {
+      var latitude = 61.498139;
+      var longitude = 23.751500;
+      connection.query(`SELECT * FROM katutiedot 
+        WHERE latitude BETWEEN ROUND(${latitude}, 5) AND ROUND(${latitude}, 5) 
+        AND longitude BETWEEN ROUND(${longitude}, 5) AND ROUND(${longitude}, 5);`, (err, result) => {
         if (err) {
           reject(err);
         }
