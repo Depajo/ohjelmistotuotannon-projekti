@@ -1,35 +1,39 @@
-const { resolve } = require('path');
 const connection = require("../connections/voicecontrol");
 
+/*
+findAll() sisältää yhden testihaun, ellalla työnalla spatial indexin hahmotus, palaan sunnuntaina asiaan
+*/
 
 const aaniohjaus = {
-	
-	/**
-	 * TO DO:
-	 * käyttäjän koordinaatit muuttujiin, tällä hetkellä muuttujissa vakiona 
-	 * testikoordinaatit
-	 */
-findAll: () => new Promise((resolve, reject) => {
-	var latitude = 61.5376050;
-	var longitude = 23.9166410;
-	connection.query(`SELECT * FROM katutiedot WHERE latitude BETWEEN ${latitude}-0.0000050 AND ${latitude} +0.0000050 AND longitude BETWEEN ${longitude}-0.0000050 AND ${longitude}+0.0000050` , (err, result) => {
-    	if (err) {
-    	  reject(err);
-    	}
-    	resolve(result);
-  	});
-}),
+  findAll: () =>
+    new Promise((resolve, reject) => {
+      var latitude = 61.498139;
+      var longitude = 23.751500;
+      connection.query(`SELECT * FROM katutiedot 
+        WHERE latitude BETWEEN ROUND(${latitude}, 5) AND ROUND(${latitude}, 5) 
+        AND longitude BETWEEN ROUND(${longitude}, 5) AND ROUND(${longitude}, 5);`, (err, result) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(result);
+      });
+    }),
 
-/// findby koordinaatit
+  /// findby koordinaatit
 
-findBy: (select) => new Promise((resolve, reject) => {
-	connection.query("SELECT * FROM katutiedot WHERE ?;", select, (err, result) => {
-    	if (err) {
-    	  reject(err);
-      	}
-      	resolve(result);
-    	})
-	}),
+  findBy: (select) =>
+    new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT * FROM katutiedot WHERE ?;",
+        select,
+        (err, result) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(result);
+        }
+      );
+    }),
 };
 
 module.exports = aaniohjaus;

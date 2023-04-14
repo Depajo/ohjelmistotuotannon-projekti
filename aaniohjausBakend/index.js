@@ -1,14 +1,15 @@
 const express = require("express");
-const Router = require("./routes/voicecontrol");
-require("dotenv").config();
+
+const katutiedotRouter = require("./routes/voicecontrol");
 
 const app = express();
+
 app.use(express.json());
 
-app.use("/api/katutiedot", Router);
+app.use("/api/katutiedot", katutiedotRouter);
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Backend is listening on port ${PORT}`);
+  console.info(`Backend is listening on port ${PORT}`);
 });
