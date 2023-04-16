@@ -36,7 +36,7 @@ const SpeakAll = ({setSpeeking, address}) => {
           speakAddress(address.city);
           setTimeout(() => {
             setSpeeking(false);
-          }, 4500);
+          }, 5800);
         }
       }}>
       <Text style={styles.TextStyle}>TOISTA OSOITE</Text>
