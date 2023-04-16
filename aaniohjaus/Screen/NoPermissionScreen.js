@@ -1,14 +1,20 @@
 import React, {useEffect} from 'react';
-import {View, Linking, Alert} from 'react-native';
+import {View, Linking, Alert, Platform, Text, Button} from 'react-native';
 
 const NoPermissionScreen = ({permissions}) => {
   useEffect(() => {
+    console.log('useEffect');
     if (permissions === 'denied' || permissions === 'blocked') {
       createAlert();
     }
   }, [permissions]);
+
   const openSettings = () => {
-    Linking.openURL('app-settings:privacy?path=LOCATION');
+    if (Platform.OS === 'ios') {
+      Linking.openURL('app-settings:privacy?path=LOCATION');
+    } else {
+      Linking.openSettings();
+    }
   };
 
   const createAlert = () => {
@@ -24,16 +30,28 @@ const NoPermissionScreen = ({permissions}) => {
       {cancelable: false},
     );
   };
-  return <View style={styles.container}>{}</View>;
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.TextStyle}>Sulje sovellus ja avaa uudestaan</Text>
+    </View>
+  );
 };
 
 const styles = {
   container: {
     flex: 1,
-    bavkgroundColor: 'white',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
+  },
+  TextStyle: {
+    textAlign: 'center',
+    color: '#808080',
+    padding: 10,
+    borderRadius: 10,
+    fontSize: 30,
+    marginTop: 5,
   },
 };
 
