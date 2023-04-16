@@ -782,5 +782,142 @@ dbcgotky3|schema||cgotky||grant option|G</Grants>
       <CollationName>utf8_general_ci</CollationName>
     </schema>
     <user id="227" parent="1" name="cgotky"/>
+    <table id="228" parent="225" name="alue">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8_general_ci</CollationName>
+    </table>
+    <table id="229" parent="225" name="katutiedot">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8_general_ci</CollationName>
+    </table>
+    <table id="230" parent="225" name="kunta">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8_general_ci</CollationName>
+    </table>
+    <table id="231" parent="225" name="maakunta">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8_general_ci</CollationName>
+    </table>
+    <column id="232" parent="228" name="alue_id">
+      <AutoIncrement>81</AutoIncrement>
+      <DataType>int(11)|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="233" parent="228" name="postinumero">
+      <DataType>varchar(5)|0s</DataType>
+      <Position>2</Position>
+    </column>
+    <column id="234" parent="228" name="kunta_id">
+      <DataType>int(11)|0s</DataType>
+      <Position>3</Position>
+    </column>
+    <foreign-key id="235" parent="228" name="alue_ibfk_1">
+      <ColNames>kunta_id</ColNames>
+      <RefColNames>kunta_id</RefColNames>
+      <RefTableName>kunta</RefTableName>
+    </foreign-key>
+    <index id="236" parent="228" name="PRIMARY">
+      <ColNames>alue_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="237" parent="228" name="postinumero">
+      <ColNames>postinumero</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="238" parent="228" name="kunta_id">
+      <ColNames>kunta_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="239" parent="228" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="240" parent="228" name="postinumero">
+      <UnderlyingIndexName>postinumero</UnderlyingIndexName>
+    </key>
+    <column id="241" parent="229" name="alue_id">
+      <DataType>int(11)|0s</DataType>
+      <Position>1</Position>
+    </column>
+    <column id="242" parent="229" name="katu">
+      <DataType>varchar(90)|0s</DataType>
+      <Position>2</Position>
+    </column>
+    <column id="243" parent="229" name="katunumero">
+      <DataType>varchar(5)|0s</DataType>
+      <Position>3</Position>
+    </column>
+    <column id="244" parent="229" name="latitude">
+      <DataType>decimal(10,7 digit)|0s</DataType>
+      <Position>4</Position>
+    </column>
+    <column id="245" parent="229" name="longitude">
+      <DataType>decimal(10,7 digit)|0s</DataType>
+      <Position>5</Position>
+    </column>
+    <foreign-key id="246" parent="229" name="katutiedot_ibfk_1">
+      <ColNames>alue_id</ColNames>
+      <RefColNames>alue_id</RefColNames>
+      <RefTableName>alue</RefTableName>
+    </foreign-key>
+    <index id="247" parent="229" name="alue_id">
+      <ColNames>alue_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <column id="248" parent="230" name="kunta_id">
+      <DataType>int(11)|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="249" parent="230" name="aluenumero">
+      <DataType>int(11)|0s</DataType>
+      <Position>2</Position>
+    </column>
+    <column id="250" parent="230" name="kunta">
+      <DataType>varchar(50)|0s</DataType>
+      <Position>3</Position>
+    </column>
+    <foreign-key id="251" parent="230" name="kunta_ibfk_1">
+      <ColNames>aluenumero</ColNames>
+      <RefColNames>aluenumero</RefColNames>
+      <RefTableName>maakunta</RefTableName>
+    </foreign-key>
+    <index id="252" parent="230" name="PRIMARY">
+      <ColNames>kunta_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="253" parent="230" name="aluenumero">
+      <ColNames>aluenumero</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="254" parent="230" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="255" parent="231" name="aluenumero">
+      <DataType>int(11)|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="256" parent="231" name="maakunta">
+      <DataType>varchar(70)|0s</DataType>
+      <Position>2</Position>
+    </column>
+    <index id="257" parent="231" name="PRIMARY">
+      <ColNames>aluenumero</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="258" parent="231" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
   </database-model>
 </dataSource>
