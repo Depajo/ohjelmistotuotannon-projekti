@@ -4,13 +4,13 @@ import Geolocation from '@react-native-community/geolocation';
 import speak from '../Tools/Speak';
 import fetchLocation from '../Tools/Fetch';
 import {ios, android} from '../Tools/Permission';
-import YesPermissionScreenTwo from './YesPermissionScreen';
+import YesPermissionScreen from './YesPermissionScreen';
 import NoPermissionScreen from './NoPermissionScreen';
 import '../Components/MuteButton';
 import MuteButton from '../Components/MuteButton';
 import SettingsButton from '../Components/SettingsButton';
 import SpeakAll from '../Components/SpeakAll';
-import {Appearance} from 'react-native';
+import {Appearance, AppState} from 'react-native';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
@@ -91,7 +91,7 @@ const MainScreen = () => {
             </View>
           </View>
           <View style={{flex: 7}}>
-            <YesPermissionScreenTwo
+            <YesPermissionScreen
               address={address}
               getLocation={getLocation}
               speeking={speeking}

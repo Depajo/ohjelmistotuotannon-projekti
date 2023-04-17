@@ -11,18 +11,32 @@ const SpeakAll = ({setSpeeking, address}) => {
     styles.button.backgroundColor = '#292d32';
   }
 
+  const speakAddress = word => {
+    console.log(!isNaN(word));
+    if (word !== 'undefined' && word !== undefined && word !== null) {
+      if (!isNaN(word)) {
+        const numerot = word.split('');
+        const numerotValilla = numerot.join(';');
+        speak(' ' + numerotValilla);
+      } else {
+        speak(`${word}`);
+      }
+    }
+  };
+
   return (
     <TouchableOpacity
       style={styles.button}
       onPress={() => {
         if (address !== null) {
           setSpeeking(true);
-          speak(
-            `${address.road} ${address.house_number} ${address.postcode} ${address.city}`,
-          );
+          speakAddress(address.road);
+          speakAddress(address.house_number);
+          speakAddress(address.postcode);
+          speakAddress(address.city);
           setTimeout(() => {
             setSpeeking(false);
-          }, 4500);
+          }, 5800);
         }
       }}>
       <Text style={styles.TextStyle}>TOISTA OSOITE</Text>
