@@ -6,6 +6,7 @@ const getKatutiedot = async (req, res) => {
     res.send(response);
   }
 };
+
 const getBy = async (req, res) => {
   const select = req.query;
   const response = await katutiedot.findBy(select);

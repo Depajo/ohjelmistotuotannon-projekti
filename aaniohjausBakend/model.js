@@ -2,7 +2,7 @@ const connection = require("./connection");
 
 ///TÄTÄ PITÄÄ MUOKATA MEIDÄN TIETOKANTAAN
 
-const aaniohjaus = {
+const katutiedot = {
   findAll: () =>
     new Promise((resolve, reject) => {
       connection.query("SELECT * FROM katutiedot;", (err, result) => {
@@ -30,4 +30,4 @@ const aaniohjaus = {
     }),
 };
 
-module.exports = aaniohjaus;
+module.exports = katutiedot;
