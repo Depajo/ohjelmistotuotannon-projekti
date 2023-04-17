@@ -1,0 +1,2 @@
+###GET
+GET http://localhost:3000/api/katutiedot/select?latitude=61.5629610ANDlongitude=23.9846900
