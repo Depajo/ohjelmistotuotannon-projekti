@@ -1,10 +1,7 @@
 const express = require("express");
 
-<<<<<<< HEAD
-const katutiedotRouter = require("./routes");
-=======
+
 const katutiedotRouter = require("./routes/voicecontrol");
->>>>>>> 541d46bab2eb39f1dfac7b115057e9756ecf41c5
 
 const app = express();
 
