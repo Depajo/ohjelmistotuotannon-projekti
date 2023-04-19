@@ -1,26 +1,34 @@
 package fi.tuni.aaniohjaus
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import fi.tuni.aaniohjaus.ui.theme.AaniohjausTheme
@@ -29,23 +37,12 @@ class MainActivity : ComponentActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
+    private var isLocationUpdatesRequested = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        locationRequest = LocationRequest.create().apply {
-            interval = 10000
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-//                val myIntent = Intent(MainActivity(), UpdateLocationService::class.java)
-//                    .putExtra("latitude", locationResult.lastLocation?.latitude)
-//                    .putExtra("longitude", locationResult.lastLocation?.longitude)
-//                startService(myIntent)
-                println("location: ${locationResult.lastLocation?.latitude}, ${locationResult.lastLocation?.longitude}")
-            }
-        }
+        setLocationComponents()
+        checkPermissions()
+        val gps = !checkGPS()
         setContent {
             AaniohjausTheme {
                 Column {
@@ -55,15 +52,54 @@ class MainActivity : ComponentActivity() {
                         color = Color.DarkGray
                     ) {
                         val location by remember { mutableStateOf("Ei sijaintia") }
+                        var openDialog by remember { mutableStateOf(gps) }
                         MainContent(location)
+                        if (openDialog) {
+                            MyAlertDialog() {
+                                openDialog = false
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
+    @SuppressLint("MissingPermission")
     override fun onResume() {
         super.onResume()
+        if (!isLocationUpdatesRequested) {
+            fusedLocationClient.requestLocationUpdates(locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+        isLocationUpdatesRequested = false
+    }
+
+    private fun setLocationComponents() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        locationRequest = LocationRequest.create().apply {
+            interval = 5000
+            fastestInterval = 2500
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                val myIntent = Intent(this@MainActivity, UpdateLocationService::class.java)
+                    .putExtra("latitude", locationResult.lastLocation?.latitude)
+                    .putExtra("longitude", locationResult.lastLocation?.longitude)
+                startService(myIntent)
+            }
+        }
+    }
+
+    private fun checkPermissions() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -72,28 +108,43 @@ class MainActivity : ComponentActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
+            val requestPermissionLauncher = registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted ->
+                if (isGranted) {
+                    if (!isLocationUpdatesRequested) {
+                        fusedLocationClient.requestLocationUpdates(locationRequest,
+                            locationCallback,
+                            Looper.getMainLooper()
+                        )
+                        isLocationUpdatesRequested = true
+                    }
+                } else {
+                    // PERMISSION NOT GRANTED
+                    println(isGranted)
+                }
+            }
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        } else {
+            if (!isLocationUpdatesRequested) {
+                fusedLocationClient.requestLocationUpdates(locationRequest,
+                    locationCallback,
+                    Looper.getMainLooper()
+                )
+                isLocationUpdatesRequested = true
+            }
         }
-        fusedLocationClient.requestLocationUpdates(locationRequest,
-            locationCallback,
-            Looper.getMainLooper())
     }
 
-    override fun onPause() {
-        super.onPause()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
+    private fun checkGPS(): Boolean {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 }
 
 @Composable
 fun Header() {
+    val context = LocalContext.current
     Surface(
         color = Color.Gray,
         modifier = Modifier
@@ -101,22 +152,35 @@ fun Header() {
             .height(50.dp)
     ) {
         Box {
-            Button(
-                onClick = {},
+            Image(
+                painter = painterResource(id = R.drawable.settings_black),
+                contentDescription = "Turn sound on or off",
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .padding(8.dp)
-            ) {
-                Text(text = "s")
-            }
-            Button(
-                onClick = {},
+                    .padding(6.dp)
+                    .size(50.dp)
+                    .clickable {
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        intent.data = Uri.fromParts("package", context.packageName, null)
+                        context.startActivity(intent)
+                    }
+            )
+            var speakerButton by remember { mutableStateOf(R.drawable.speaker_black) }
+            Image(
+                painter = painterResource(id = speakerButton),
+                contentDescription = "Turn sound on or off",
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
-            ) {
-                Text(text = "m")
-            }
+                    .size(50.dp)
+                    .clickable {
+                        speakerButton = if (speakerButton == R.drawable.speaker_black) {
+                            R.drawable.speaker_mute_black
+                        } else {
+                            R.drawable.speaker_black
+                        }
+                    }
+            )
         }
     }
 }
@@ -151,19 +215,55 @@ fun MainContent(location: String) {
     }
 }
 
-@Preview
 @Composable
-fun MainScreenPreview() {
-    AaniohjausTheme {
-        Column {
-            Header()
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.DarkGray
+fun MyAlertDialog(callback: () -> Unit) {
+    val context = LocalContext.current
+    AlertDialog(
+        onDismissRequest = {
+            callback()
+        },
+        title = {
+            Text(
+                text = "GPS ei ole päällä",
+                style = MaterialTheme.typography.body1,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Text(
+                text = "Sovellus vaatii GPS signaalin toimiakseen",
+                style = MaterialTheme.typography.body1
+            )
+        },
+        dismissButton = {
+            OutlinedButton(
+                onClick = {
+                    callback()
+                },
+                border = BorderStroke(1.dp, Color.Transparent)
             ) {
-                val location by remember { mutableStateOf("Ei sijaintia") }
-                MainContent(location)
+                Text(
+                    text = "Sulje",
+//                    style = MaterialTheme.typography.body1
+                    color = MaterialTheme.colors.primaryVariant
+                )
+            }
+        },
+        confirmButton = {
+            OutlinedButton(
+                onClick = {
+                    callback()
+                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    context.startActivity(intent)
+                },
+                border = BorderStroke(1.dp, Color.Transparent)
+            ) {
+                Text(
+                    text = "Avaa asetukset",
+                    style = MaterialTheme.typography.body1
+                )
             }
         }
-    }
+    )
 }

@@ -3,6 +3,7 @@ package fi.tuni.aaniohjaus
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import okhttp3.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -13,8 +14,8 @@ class UpdateLocationService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val latitude = intent?.getStringExtra("latitude")
-        val longitude = intent?.getStringExtra("longitude")
+        val latitude = intent?.getDoubleExtra("latitude", 0.0)
+        val longitude = intent?.getDoubleExtra("longitude", 0.0)
         val client = OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS).build()
         val request = Request.Builder()
             .url("https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=$latitude&lon=$longitude")
@@ -27,12 +28,13 @@ class UpdateLocationService : Service() {
             override fun onResponse(call: Call, response: Response) {
                 response.use {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                    val myIntent = Intent("fetchResult").putExtra("fetchResult", response.body!!.string())
+//                    val myIntent = Intent("fetchResult").putExtra("fetchResult", response.body!!.string())
+                    println(response.body!!.string())
                     stopSelf()
                 }
             }
         })
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {
