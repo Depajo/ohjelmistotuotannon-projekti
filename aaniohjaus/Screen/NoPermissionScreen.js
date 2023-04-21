@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {View, Linking, Alert, Platform, Text, Button} from 'react-native';
+import {ios, android} from '../Tools/Permission';
 
 const NoPermissionScreen = ({permissions}) => {
   useEffect(() => {
@@ -14,6 +15,14 @@ const NoPermissionScreen = ({permissions}) => {
       Linking.openURL('app-settings:privacy?path=LOCATION');
     } else {
       Linking.openSettings();
+    }
+  };
+
+  const checkPermission = () => {
+    if (Platform.OS === 'ios') {
+      ios();
+    } else {
+      android();
     }
   };
 
