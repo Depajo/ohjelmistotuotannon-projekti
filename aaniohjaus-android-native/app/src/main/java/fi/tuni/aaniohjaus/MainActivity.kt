@@ -2,14 +2,17 @@ package fi.tuni.aaniohjaus
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,19 +33,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.android.gms.location.*
 import fi.tuni.aaniohjaus.ui.theme.AaniohjausTheme
+import java.util.*
+import kotlin.concurrent.thread
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private var isLocationUpdatesRequested = false
+    private lateinit var tts : TextToSpeech
+    private var address : Address? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setLocationComponents()
         checkPermissions()
         val gps = !checkGPS()
+        tts = TextToSpeech(this, this)
         setContent {
             AaniohjausTheme {
                 Column {
@@ -51,9 +62,26 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = Color.DarkGray
                     ) {
-                        val location by remember { mutableStateOf("Ei sijaintia") }
+                        var road by remember { mutableStateOf("Ei sijaintia") }
+                        var otherInformation by remember { mutableStateOf("") }
                         var openDialog by remember { mutableStateOf(gps) }
-                        MainContent(location)
+                        MyLocalBroadcastManager(IntentFilter("fetchResult")) {
+                            thread {
+                                val jsonParser = ObjectMapper().createParser(it.getStringExtra("fetchResult"))
+                                val addressNode = jsonParser.readValueAsTree<JsonNode>().get("address")
+                                address = ObjectMapper().treeToValue(addressNode, Address::class.java)
+                                if (address!!.roadWithHouseNumber() != road) {
+                                    tts.speak(address!!.roadWithHouseNumber(), TextToSpeech.QUEUE_FLUSH, null, "")
+                                }
+                                road = address!!.roadWithHouseNumber()
+                                otherInformation = address!!.postCodeWithCity()
+                            }
+                        }
+                        MainContent(road, otherInformation) {
+                            if (address != null) {
+                                tts.speak(address!!.toStringWithPostalCodesSeparated(), TextToSpeech.QUEUE_FLUSH, null, "")
+                            }
+                        }
                         if (openDialog) {
                             MyAlertDialog() {
                                 openDialog = false
@@ -80,6 +108,12 @@ class MainActivity : ComponentActivity() {
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
         isLocationUpdatesRequested = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        tts.stop()
+        tts.shutdown()
     }
 
     private fun setLocationComponents() {
@@ -140,6 +174,19 @@ class MainActivity : ComponentActivity() {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
+
+    override fun onInit(status: Int) {
+        var finnish = Locale.getAvailableLocales().find {
+            it.toString() == "fi_FI"
+        }
+        println(finnish)
+        if (status == TextToSpeech.SUCCESS) {
+            val result = tts.setLanguage(finnish)
+            if (result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA) {
+                tts.language = Locale.ENGLISH
+            }
+        }
+    }
 }
 
 @Composable
@@ -186,7 +233,7 @@ fun Header() {
 }
 
 @Composable
-fun MainContent(location: String) {
+fun MainContent(road: String, otherInformation: String, buttonCallback: () -> Unit) {
     Box {
         Column(
             Modifier.align(Alignment.Center)
@@ -197,14 +244,19 @@ fun MainContent(location: String) {
             )
             Spacer(Modifier.height(50.dp))
             Text(
-                text = location,
+                text = road,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(20.dp, 0.dp)
             )
+            Text(
+                text = otherInformation,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+            )
             Spacer(Modifier.height(50.dp))
             Button(
-                onClick = {},
+                onClick = buttonCallback,
                 modifier = Modifier.size(200.dp, 60.dp),
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(Color.Gray)
@@ -245,7 +297,7 @@ fun MyAlertDialog(callback: () -> Unit) {
             ) {
                 Text(
                     text = "Sulje",
-//                    style = MaterialTheme.typography.body1
+                    style = MaterialTheme.typography.body1,
                     color = MaterialTheme.colors.primaryVariant
                 )
             }
@@ -266,4 +318,17 @@ fun MyAlertDialog(callback: () -> Unit) {
             }
         }
     )
+}
+
+@Composable
+fun MyLocalBroadcastManager(intentFilter: IntentFilter, onReceive: (Intent) -> Unit) {
+    val context = LocalContext.current
+    LaunchedEffect(context) {
+         val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent) {
+                onReceive(intent)
+            }
+        }
+        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, intentFilter)
+    }
 }

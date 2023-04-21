@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import okhttp3.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -28,8 +29,8 @@ class UpdateLocationService : Service() {
             override fun onResponse(call: Call, response: Response) {
                 response.use {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
-//                    val myIntent = Intent("fetchResult").putExtra("fetchResult", response.body!!.string())
-                    println(response.body!!.string())
+                    val myIntent = Intent("fetchResult").putExtra("fetchResult", response.body!!.string())
+                    LocalBroadcastManager.getInstance(this@UpdateLocationService).sendBroadcast(myIntent)
                     stopSelf()
                 }
             }
