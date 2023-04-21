@@ -10,7 +10,7 @@ jotta vain lähinnä oleva osoite palautetaan ääneen sanottavaksi
 */
 
 const aaniohjaus = {
-/*
+    /*
     findAll: () =>
         new Promise((resolve, reject) => {
             var latitude = 61.498139;
@@ -39,8 +39,7 @@ const aaniohjaus = {
             FROM katutiedot
             HAVING distance_in_kms <= 0.2
             ORDER BY distance_in_kms ASC;`;
-            connection.query(query, [longitude, latitude], 
-              (err, result) => {
+            connection.query(query, [longitude, latitude], (err, result) => {
                 if (err) {
                     reject(err);
                 }
