@@ -16,7 +16,7 @@ const fetchLocation = (longitude, latitude) => {
           longitude,
       )
       .then(response => {
-        console.log(response.data[0]);
+        // console.log(response.data[0]);
         resolve(response.data[0]);
       })
       .catch(error => {
