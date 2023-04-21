@@ -22,13 +22,13 @@ const YesPermissionScreen = ({address, getLocation, speeking}) => {
       {address != null ? (
         <View>
           <Text style={styles.TextStyle}>
-            {address.road}{' '}
-            {'undefined' !== address.house_number
-              ? address.house_number
+            {address.katu}{' '}
+            {'undefined' !== address.katunumero
+              ? address.katunumero
               : 'Ei numeroa'}
           </Text>
-          <Text style={styles.TextStyle}>{address.postcode}</Text>
-          <Text style={styles.TextStyle}>{address.city}</Text>
+          {/* <Text style={styles.TextStyle}>{address.alue_id}</Text> */}
+          {/* <Text style={styles.TextStyle}>{address.city}</Text> */}
         </View>
       ) : (
         <Text style={styles.TextStyle}>Ei sijaintia</Text>

@@ -3,14 +3,21 @@ import axios from 'axios';
 const fetchLocation = (longitude, latitude) => {
   return new Promise((resolve, reject) => {
     axios
+      // .get(
+      //   'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' +
+      //     latitude +
+      //     '&lon=' +
+      //     longitude,
+      // )
       .get(
-        'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' +
+        'https://katutiedot-api.onrender.com/api/katutiedot/' +
           latitude +
-          '&lon=' +
+          '/' +
           longitude,
       )
       .then(response => {
-        resolve(response);
+        console.log(response.data[0]);
+        resolve(response.data[0]);
       })
       .catch(error => {
         console.log(error.message);

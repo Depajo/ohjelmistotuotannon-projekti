@@ -30,10 +30,10 @@ const SpeakAll = ({setSpeeking, address}) => {
       onPress={() => {
         if (address !== null) {
           setSpeeking(true);
-          speakAddress(address.road);
-          speakAddress(address.house_number);
-          speakAddress(address.postcode);
-          speakAddress(address.city);
+          speakAddress(address.katu);
+          speakAddress(address.katunumero);
+          // speakAddress(address.postcode);
+          // speakAddress(address.city);
           setTimeout(() => {
             setSpeeking(false);
           }, 5800);

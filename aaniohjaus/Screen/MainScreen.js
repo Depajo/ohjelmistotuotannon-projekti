@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Platform, SafeAreaView, StyleSheet, View} from 'react-native';
+import {Platform, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import speak from '../Tools/Speak';
 import fetchLocation from '../Tools/Fetch';
@@ -34,7 +34,7 @@ const MainScreen = () => {
     console.log(mute);
     if (street != null && mute === false) {
       setSpeeking(true);
-      speak(address.road)
+      speak(address.katu)
         .then(() => {
           setTimeout(() => {
             setSpeeking(false);
@@ -63,8 +63,8 @@ const MainScreen = () => {
         position => {
           fetchLocation(position.coords.longitude, position.coords.latitude)
             .then(response => {
-              setAddress(response.data.address);
-              setStreet(response.data.address.road);
+              setAddress(response);
+              setStreet(response.katu);
             })
             .catch(error => {
               console.log(error);
