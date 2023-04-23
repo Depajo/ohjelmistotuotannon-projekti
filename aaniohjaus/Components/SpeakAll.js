@@ -2,9 +2,11 @@ import React, {useEffect} from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import speak from '../Tools/Speak';
 import {Appearance} from 'react-native';
+import {enable} from 'react-native-volume-manager';
 
 const SpeakAll = ({setSpeeking, address}) => {
   const colorSchema = Appearance.getColorScheme();
+  const [disabled, setDisabled] = React.useState(false);
   if (colorSchema === 'dark') {
     styles.button.backgroundColor = 'black';
   } else {
@@ -28,17 +30,18 @@ const SpeakAll = ({setSpeeking, address}) => {
     <TouchableOpacity
       style={styles.button}
       onPress={() => {
-        if (address !== null) {
-          setSpeeking(true);
-          speakAddress(address.katu);
-          speakAddress(address.katunumero);
-          // speakAddress(address.postcode);
-          // speakAddress(address.city);
-          setTimeout(() => {
-            setSpeeking(false);
-          }, 5800);
-        }
-      }}>
+        setDisabled(true);
+        setSpeeking(true);
+        speakAddress(address.katu);
+        speakAddress(address.katunumero);
+        speakAddress(address.postinumero);
+        speakAddress(address.kunta);
+        setTimeout(() => {
+          setSpeeking(false);
+          setDisabled(false);
+        }, 5800);
+      }}
+      disabled={disabled || address === null}>
       <Text style={styles.TextStyle}>TOISTA OSOITE</Text>
     </TouchableOpacity>
   );

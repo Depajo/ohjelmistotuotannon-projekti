@@ -27,8 +27,11 @@ const YesPermissionScreen = ({address, getLocation, speeking}) => {
               ? address.katunumero
               : 'Ei numeroa'}
           </Text>
-          {/* <Text style={styles.TextStyle}>{address.alue_id}</Text> */}
-          {/* <Text style={styles.TextStyle}>{address.city}</Text> */}
+          <Text style={styles.TextStyle}>{address.postinumero}</Text>
+          <Text style={styles.TextStyle}>{address.kunta}</Text>
+          <Text style={{color: 'grey', textAlign: 'center'}}>
+            {address.distance_in_kms}km
+          </Text>
         </View>
       ) : (
         <Text style={styles.TextStyle}>Ei sijaintia</Text>

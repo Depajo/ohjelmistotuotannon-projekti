@@ -77,6 +77,7 @@ PODS:
     - hermes-engine/Pre-built (= 0.71.4)
   - hermes-engine/Pre-built (0.71.4)
   - libevent (2.1.12)
+  - Mute (0.6.1)
   - OpenSSL-Universal (1.1.1100)
   - Permission-LocationAlways (3.8.0):
     - RNPermissions
@@ -335,6 +336,9 @@ PODS:
     - glog
   - react-native-geolocation (3.0.5):
     - React-Core
+  - react-native-volume-manager (1.2.1):
+    - Mute
+    - React-Core
   - React-perflogger (0.71.4)
   - React-RCTActionSheet (0.71.4):
     - React-Core/RCTActionSheetHeaders (= 0.71.4)
@@ -479,6 +483,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
+  - react-native-volume-manager (from `../node_modules/react-native-volume-manager`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -511,6 +516,7 @@ SPEC REPOS:
     - FlipperKit
     - fmt
     - libevent
+    - Mute
     - OpenSSL-Universal
     - SocketRocket
     - YogaKit
@@ -562,6 +568,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
+  react-native-volume-manager:
+    :path: "../node_modules/react-native-volume-manager"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -616,6 +624,7 @@ SPEC CHECKSUMS:
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: a1f157c49ea579c28b0296bda8530e980c45bdb3
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
+  Mute: 20135a96076f140cc82bfc8b810e2d6150d8ec7e
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   Permission-LocationAlways: e7ce67f3091ec096b6ac274bc30a18830a66b33c
   Permission-LocationWhenInUse: 1c80e4797ae587642a83125e80b86686cefeba53
@@ -634,6 +643,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 1f51e775819199d3fe9410e69ee8d4c4161c7b06
   React-logger: 0d58569ec51d30d1792c5e86a8e3b78d24b582c6
   react-native-geolocation: 7383cbe9fa75b168bbbe40b566070fd0b44d30d6
+  react-native-volume-manager: 3c58b64125fd42438fb8b95776566910dce54a46
   React-perflogger: 0bb0522a12e058f6eb69d888bc16f40c16c4b907
   React-RCTActionSheet: bfd675a10f06a18728ea15d82082d48f228a213a
   React-RCTAnimation: 2fa220b2052ec75b733112aca39143d34546a941

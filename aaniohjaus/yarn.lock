@@ -5884,6 +5884,11 @@
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
 
+"react-native-volume-manager@^1.2.1":
+  "integrity" "sha512-Jm+00q/1BmuYJGT3xHnP9V0HccXpuEkoD75dU1f6cRygQtRH6cl26RqoYq+O2p3x3v1IUFoT2eIlS47+yI1OUw=="
+  "resolved" "https://registry.npmjs.org/react-native-volume-manager/-/react-native-volume-manager-1.2.1.tgz"
+  "version" "1.2.1"
+
 "react-native@*", "react-native@>=0.63.3", "react-native@0.71.4":
   "integrity" "sha512-3hSYqvWrOdKhpV3HpEKp1/CkWx8Sr/N/miCrmUIAsVTSJUR7JW0VvIsrV9urDhUj/s6v2WF4n7qIEEJsmTCrPw=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.71.4.tgz"

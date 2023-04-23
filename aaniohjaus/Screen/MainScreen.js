@@ -11,6 +11,7 @@ import MuteButton from '../Components/MuteButton';
 import SettingsButton from '../Components/SettingsButton';
 import SpeakAll from '../Components/SpeakAll';
 import {Appearance, AppState} from 'react-native';
+import {VolumeManager} from 'react-native-volume-manager';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
@@ -20,6 +21,11 @@ const MainScreen = () => {
   const [mute, setMute] = React.useState(false);
 
   useEffect(() => {
+    AppState.addEventListener('change', state => {
+      if (state === 'active') {
+        askPermission();
+      }
+    });
     const colorSchema = Appearance.getColorScheme();
     if (colorSchema === 'dark') {
       styles.menu.backgroundColor = '#0d0d0d';
@@ -30,8 +36,9 @@ const MainScreen = () => {
       styles.container.backgroundColor = '#f3f2f2';
       styles.safeAreaView.backgroundColor = '#292d32';
     }
+
     askPermission();
-    console.log(mute);
+
     if (street != null && mute === false) {
       setSpeeking(true);
       speak(address.katu)
@@ -45,6 +52,8 @@ const MainScreen = () => {
         });
     }
   }, [street, mute]);
+
+  VolumeManager.enableInSilenceMode(true);
 
   const askPermission = async () => {
     if (Platform.OS === 'ios') {
