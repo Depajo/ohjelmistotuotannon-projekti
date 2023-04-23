@@ -5,6 +5,7 @@ import {Appearance} from 'react-native';
 
 const YesPermissionScreen = ({address, getLocation, speeking}) => {
   const colorScheme = Appearance.getColorScheme();
+
   useEffect(() => {
     if (colorScheme === 'dark') {
       styles.TextStyle.color = 'white';

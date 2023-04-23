@@ -104,6 +104,7 @@ const MainScreen = () => {
               address={address}
               getLocation={getLocation}
               speeking={speeking}
+              counter={counter}
             />
           </View>
           <View style={{flex: 2}}>
