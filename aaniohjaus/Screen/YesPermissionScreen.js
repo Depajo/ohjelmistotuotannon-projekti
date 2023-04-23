@@ -12,6 +12,7 @@ const YesPermissionScreen = ({address, getLocation, speeking}) => {
     } else {
       styles.TextStyle.color = 'black';
     }
+    getLocation();
     setInterval(() => {
       getLocation();
     }, 1000);
@@ -31,7 +32,7 @@ const YesPermissionScreen = ({address, getLocation, speeking}) => {
           <Text style={styles.TextStyle}>{address.postinumero}</Text>
           <Text style={styles.TextStyle}>{address.kunta}</Text>
           <Text style={{color: 'grey', textAlign: 'center'}}>
-            {address.distance_in_kms}km
+            Etäisyys: {(address.distance_in_kms * 1000).toFixed(6)} metriä
           </Text>
         </View>
       ) : (

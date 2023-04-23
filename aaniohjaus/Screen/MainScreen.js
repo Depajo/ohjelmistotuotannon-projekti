@@ -19,6 +19,9 @@ const MainScreen = () => {
   const [permissions, setPermissions] = React.useState(null);
   const [speeking, setSpeeking] = React.useState(false);
   const [mute, setMute] = React.useState(false);
+  const [count, setCount] = React.useState(0);
+  const [speed, setSpeed] = React.useState(0);
+  const firstUpdate = React.useRef(true);
 
   useEffect(() => {
     AppState.addEventListener('change', state => {
@@ -70,14 +73,22 @@ const MainScreen = () => {
     if (permissions === 'granted') {
       Geolocation.getCurrentPosition(
         position => {
-          fetchLocation(position.coords.longitude, position.coords.latitude)
-            .then(response => {
-              setAddress(response);
-              setStreet(response.katu);
-            })
-            .catch(error => {
-              console.log(error);
-            });
+          console.log(position);
+          setSpeed(position.coords.speed);
+
+          if (position.coords.speed > 0.2 || firstUpdate.current) {
+            firstUpdate.current = false;
+            setCount(count => count + 1);
+            fetchLocation(position.coords.longitude, position.coords.latitude)
+              .then(response => {
+                // console.log(response);
+                setAddress(response);
+                setStreet(response.katu);
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          }
         },
         error => {
           console.log(error);
@@ -105,6 +116,14 @@ const MainScreen = () => {
               getLocation={getLocation}
               speeking={speeking}
             />
+            <Text
+              style={{color: 'grey', textAlign: 'center', marginBottom: 10}}>
+              Sijaintia päivitetty: {count} kertaa{' '}
+            </Text>
+            <Text
+              style={{color: 'grey', textAlign: 'center', marginBottom: 10}}>
+              Nopeus: {speed} km/h
+            </Text>
           </View>
           <View style={{flex: 2}}>
             <SpeakAll setSpeeking={setSpeeking} address={address} />
