@@ -14,6 +14,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -62,7 +63,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                         modifier = Modifier.fillMaxSize(),
                         color = Color.DarkGray
                     ) {
-                        var road by remember { mutableStateOf("Ei sijaintia") }
+                        var road by remember { mutableStateOf("Haetaan sijaintia...") }
                         var otherInformation by remember { mutableStateOf("") }
                         var openDialog by remember { mutableStateOf(gps) }
                         MyLocalBroadcastManager(IntentFilter("fetchResult")) {
@@ -70,7 +71,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                                 val jsonParser = ObjectMapper().createParser(it.getStringExtra("fetchResult"))
                                 val addressNode = jsonParser.readValueAsTree<JsonNode>().get("address")
                                 address = ObjectMapper().treeToValue(addressNode, Address::class.java)
-                                if (address!!.roadWithHouseNumber() != road) {
+                                if (address!!.roadWithHouseNumber() != road && address!!.road != null) {
                                     tts.speak(address!!.roadWithHouseNumber(), TextToSpeech.QUEUE_FLUSH, null, "")
                                 }
                                 road = address!!.roadWithHouseNumber()
@@ -83,7 +84,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                             }
                         }
                         if (openDialog) {
-                            MyAlertDialog() {
+                            MyAlertDialog {
                                 openDialog = false
                             }
                         }
@@ -125,15 +126,17 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         }
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
+                val latitude = kotlin.random.Random.nextDouble(61.50000, 61.55000)
+                val longitude = kotlin.random.Random.nextDouble(23.80000, 23.90000)
                 val myIntent = Intent(this@MainActivity, UpdateLocationService::class.java)
-                    .putExtra("latitude", locationResult.lastLocation?.latitude)
-                    .putExtra("longitude", locationResult.lastLocation?.longitude)
+                    .putExtra("latitude", /*locationResult.lastLocation?.latitude*/latitude)
+                    .putExtra("longitude", /*locationResult.lastLocation?.longitude*/longitude)
                 startService(myIntent)
             }
         }
     }
 
-    private fun checkPermissions() {
+    fun checkPermissions() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -154,8 +157,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                         isLocationUpdatesRequested = true
                     }
                 } else {
-                    // PERMISSION NOT GRANTED
-                    println(isGranted)
+                    Toast.makeText(this, "Anna sijainnin haulle lupa asetuksista", Toast.LENGTH_LONG).show()
                 }
             }
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -179,7 +181,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         var finnish = Locale.getAvailableLocales().find {
             it.toString() == "fi_FI"
         }
-        println(finnish)
         if (status == TextToSpeech.SUCCESS) {
             val result = tts.setLanguage(finnish)
             if (result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA) {
