@@ -30,7 +30,7 @@ const MainScreen = () => {
     if (colorSchema === 'dark') {
       styles.menu.backgroundColor = '#0d0d0d';
       styles.container.backgroundColor = '#3a3a3a';
-      styles.safeAreaView.backgroundColor = 'black';
+      styles.safeAreaView.backgroundColor = '#0d0d0d';
     } else {
       styles.menu.backgroundColor = '#292d32';
       styles.container.backgroundColor = '#f3f2f2';
@@ -104,7 +104,6 @@ const MainScreen = () => {
               address={address}
               getLocation={getLocation}
               speeking={speeking}
-              counter={counter}
             />
           </View>
           <View style={{flex: 2}}>
