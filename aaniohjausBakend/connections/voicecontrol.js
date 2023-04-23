@@ -7,11 +7,11 @@ vaan ottaa tietokoneen käyttäjän nimen, tämä huomioksi kun teette omat .env
  */
 
 const connection = mysql.createPool({
-    connectionLimit: 10,
-    host: process.env.HOST,
-    user: process.env.DBUSER,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE,
+  connectionLimit: 10,
+  host: process.env.HOST,
+  user: process.env.DBUSER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
 });
 
 module.exports = connection;
