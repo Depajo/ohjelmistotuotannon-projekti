@@ -12,6 +12,7 @@ import SettingsButton from '../Components/SettingsButton';
 import SpeakAll from '../Components/SpeakAll';
 import {Appearance, AppState} from 'react-native';
 import {VolumeManager} from 'react-native-volume-manager';
+import InfoButton from '../Components/InfoButton';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
@@ -19,18 +20,23 @@ const MainScreen = () => {
   const [permissions, setPermissions] = React.useState(null);
   const [speeking, setSpeeking] = React.useState(false);
   const [mute, setMute] = React.useState(false);
+  const [count, setCount] = React.useState(0);
+  const [speed, setSpeed] = React.useState(0);
+  const firstUpdate = React.useRef(true);
 
   useEffect(() => {
     AppState.addEventListener('change', state => {
       if (state === 'active') {
         askPermission();
+        firstUpdate.current = true;
+        speakingStreet();
       }
     });
     const colorSchema = Appearance.getColorScheme();
     if (colorSchema === 'dark') {
       styles.menu.backgroundColor = '#0d0d0d';
       styles.container.backgroundColor = '#3a3a3a';
-      styles.safeAreaView.backgroundColor = 'black';
+      styles.safeAreaView.backgroundColor = '#0d0d0d';
     } else {
       styles.menu.backgroundColor = '#292d32';
       styles.container.backgroundColor = '#f3f2f2';
@@ -39,18 +45,7 @@ const MainScreen = () => {
 
     askPermission();
 
-    if (street != null && mute === false) {
-      setSpeeking(true);
-      speak(address.katu)
-        .then(() => {
-          setTimeout(() => {
-            setSpeeking(false);
-          }, 1500);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
+    speakingStreet();
   }, [street, mute]);
 
   VolumeManager.enableInSilenceMode(true);
@@ -66,18 +61,41 @@ const MainScreen = () => {
     }
   };
 
+  const speakingStreet = () => {
+    if (street != null && mute === false) {
+      setSpeeking(true);
+      speak(address.katu)
+        .then(() => {
+          setTimeout(() => {
+            setSpeeking(false);
+          }, 1500);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  };
+
   const getLocation = () => {
     if (permissions === 'granted') {
       Geolocation.getCurrentPosition(
         position => {
-          fetchLocation(position.coords.longitude, position.coords.latitude)
-            .then(response => {
-              setAddress(response);
-              setStreet(response.katu);
-            })
-            .catch(error => {
-              console.log(error);
-            });
+          // console.log(position);
+          setSpeed(position.coords.speed);
+
+          if (position.coords.speed > 0.2 || firstUpdate.current) {
+            firstUpdate.current = false;
+            setCount(count => count + 1);
+            fetchLocation(position.coords.longitude, position.coords.latitude)
+              .then(response => {
+                // console.log(response);
+                setAddress(response);
+                setStreet(response.katu);
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          }
         },
         error => {
           console.log(error);
@@ -92,10 +110,33 @@ const MainScreen = () => {
       <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.container}>
           <View style={styles.menu}>
-            <View style={{flex: 1, alignItems: 'flex-start', margin: 10}}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'flex-start',
+                marginLeft: 10,
+                padding: 0,
+              }}>
+              <InfoButton />
+            </View>
+            <View
+              style={{
+                flex: 3,
+                alignItems: 'flex-end',
+                margin: 0,
+                padding: 0,
+              }}></View>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'flex-end',
+                marginRight: 12,
+                padding: 0,
+              }}>
               <SettingsButton />
             </View>
-            <View style={{flex: 1, alignItems: 'flex-end', margin: 10}}>
+            <View
+              style={{flex: 1, alignItems: 'flex-end', margin: 0, padding: 0}}>
               <MuteButton mute={mute} setMute={setMute} />
             </View>
           </View>
@@ -105,6 +146,14 @@ const MainScreen = () => {
               getLocation={getLocation}
               speeking={speeking}
             />
+            <Text
+              style={{color: 'grey', textAlign: 'center', marginBottom: 10}}>
+              Sijaintia päivitetty: {count} kertaa{' '}
+            </Text>
+            <Text
+              style={{color: 'grey', textAlign: 'center', marginBottom: 10}}>
+              Nopeus: {speed} km/h
+            </Text>
           </View>
           <View style={{flex: 2}}>
             <SpeakAll setSpeeking={setSpeeking} address={address} />
@@ -131,7 +180,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#3a3a3a',
   },
   menu: {
-    flex: 0.7,
+    flex: 0.65,
     flexDirection: 'row',
     backgroundColor: '#0d0d0d',
   },
