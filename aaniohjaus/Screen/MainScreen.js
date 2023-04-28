@@ -12,6 +12,7 @@ import SettingsButton from '../Components/SettingsButton';
 import SpeakAll from '../Components/SpeakAll';
 import {Appearance, AppState} from 'react-native';
 import {VolumeManager} from 'react-native-volume-manager';
+import InfoButton from '../Components/InfoButton';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
@@ -27,6 +28,8 @@ const MainScreen = () => {
     AppState.addEventListener('change', state => {
       if (state === 'active') {
         askPermission();
+        firstUpdate.current = true;
+        speakingStreet();
       }
     });
     const colorSchema = Appearance.getColorScheme();
@@ -42,18 +45,7 @@ const MainScreen = () => {
 
     askPermission();
 
-    if (street != null && mute === false) {
-      setSpeeking(true);
-      speak(address.katu)
-        .then(() => {
-          setTimeout(() => {
-            setSpeeking(false);
-          }, 1500);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
+    speakingStreet();
   }, [street, mute]);
 
   VolumeManager.enableInSilenceMode(true);
@@ -69,11 +61,26 @@ const MainScreen = () => {
     }
   };
 
+  const speakingStreet = () => {
+    if (street != null && mute === false) {
+      setSpeeking(true);
+      speak(address.katu)
+        .then(() => {
+          setTimeout(() => {
+            setSpeeking(false);
+          }, 1500);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  };
+
   const getLocation = () => {
     if (permissions === 'granted') {
       Geolocation.getCurrentPosition(
         position => {
-          console.log(position);
+          // console.log(position);
           setSpeed(position.coords.speed);
 
           if (position.coords.speed > 0.2 || firstUpdate.current) {
@@ -103,10 +110,33 @@ const MainScreen = () => {
       <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.container}>
           <View style={styles.menu}>
-            <View style={{flex: 1, alignItems: 'flex-start', margin: 10}}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'flex-start',
+                marginLeft: 10,
+                padding: 0,
+              }}>
+              <InfoButton />
+            </View>
+            <View
+              style={{
+                flex: 3,
+                alignItems: 'flex-end',
+                margin: 0,
+                padding: 0,
+              }}></View>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'flex-end',
+                marginRight: 12,
+                padding: 0,
+              }}>
               <SettingsButton />
             </View>
-            <View style={{flex: 1, alignItems: 'flex-end', margin: 10}}>
+            <View
+              style={{flex: 1, alignItems: 'flex-end', margin: 0, padding: 0}}>
               <MuteButton mute={mute} setMute={setMute} />
             </View>
           </View>
@@ -150,7 +180,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#3a3a3a',
   },
   menu: {
-    flex: 0.7,
+    flex: 0.65,
     flexDirection: 'row',
     backgroundColor: '#0d0d0d',
   },

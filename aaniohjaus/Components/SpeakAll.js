@@ -18,7 +18,7 @@ const SpeakAll = ({setSpeeking, address}) => {
     if (word !== 'undefined' && word !== undefined && word !== null) {
       if (!isNaN(word)) {
         const numerot = word.split('');
-        const numerotValilla = numerot.join(';');
+        const numerotValilla = numerot.join(' ');
         speak(' ' + numerotValilla);
       } else {
         speak(`${word}`);
