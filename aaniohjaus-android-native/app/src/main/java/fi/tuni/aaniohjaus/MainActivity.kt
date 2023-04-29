@@ -41,6 +41,7 @@ import kotlin.concurrent.thread
 class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     private lateinit var tts: TextToSpeech
     private var address: Address? = null
+    private var mute = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +52,16 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         setContent {
             AaniohjausTheme {
                 Column {
-                    Header()
+                    Header() {
+                        mute = if (!mute) {
+                            if (tts.isSpeaking) {
+                                tts.stop()
+                            }
+                            true
+                        } else {
+                            false
+                        }
+                    }
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.primary
@@ -65,7 +75,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                                 val addressNode = rootNode[0]
                                 address = ObjectMapper().treeToValue(addressNode, Address::class.java)
                                 LocationUtils.address = address
-                                if (address!!.roadWithHouseNumber() != road) {
+                                if (address!!.roadWithHouseNumber() != road && !mute) {
                                     tts.speak(address!!.roadWithHouseNumber(), TextToSpeech.QUEUE_FLUSH, null, "")
                                 }
                                 road = address!!.roadWithHouseNumber()
@@ -73,7 +83,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                             }
                         }
                         MainContent(road, otherInformation) {
-                            if (address != null) {
+                            if (address != null && !mute) {
                                 tts.speak(address!!.toStringWithPostalCodesSeparated(), TextToSpeech.QUEUE_FLUSH, null, "")
                             }
                         }
@@ -147,7 +157,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
 }
 
 @Composable
-fun Header() {
+fun Header(muteCallback: () -> Unit) {
     val context = LocalContext.current
     Surface(
         color = MaterialTheme.colors.secondary,
@@ -183,6 +193,7 @@ fun Header() {
                                 R.drawable.speaker_mute_white
                             else
                                 R.drawable.speaker_white
+                            muteCallback()
                         }
                 )
             }
