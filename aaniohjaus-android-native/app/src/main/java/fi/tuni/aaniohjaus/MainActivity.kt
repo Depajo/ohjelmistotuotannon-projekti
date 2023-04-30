@@ -1,7 +1,6 @@
 package fi.tuni.aaniohjaus
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,22 +26,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.android.gms.location.*
 import fi.tuni.aaniohjaus.ui.theme.AaniohjausTheme
+import kotlinx.coroutines.delay
 import java.util.*
 import kotlin.concurrent.thread
 
 class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     private lateinit var tts: TextToSpeech
     private var address: Address? = null
-    private var mute = false;
+    private var mute = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +55,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         setContent {
             AaniohjausTheme {
                 Column {
-                    Header() {
+                    Header {
                         mute = if (!mute) {
                             if (tts.isSpeaking) {
                                 tts.stop()
@@ -64,9 +67,12 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                     }
                     Surface(
                         modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.primary
+                        color = MaterialTheme.colors.background
                     ) {
                         var road by remember { mutableStateOf("Haetaan sijaintia...") }
+                        if (road == "Haetaan sijaintia...") {
+                            LocationUtils.address = null
+                        }
                         var otherInformation by remember { mutableStateOf("") }
                         var openDialog by remember { mutableStateOf(gps) }
                         MyLocalBroadcastManager(IntentFilter("fetchResult")) {
@@ -82,7 +88,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                                 otherInformation = address!!.postCodeWithCity()
                             }
                         }
-                        MainContent(road, otherInformation) {
+                        MainContent(road, otherInformation, tts) {
                             if (address != null && !mute) {
                                 tts.speak(address!!.toStringWithPostalCodesSeparated(), TextToSpeech.QUEUE_FLUSH, null, "")
                             }
@@ -98,7 +104,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         }
     }
 
-    @SuppressLint("MissingPermission")
     override fun onResume() {
         super.onResume()
         LocationUtils.startUpdating()
@@ -170,7 +175,7 @@ fun Header(muteCallback: () -> Unit) {
                 Modifier.align(Alignment.TopEnd)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.settings_white),
+                    painter = painterResource(R.drawable.settings_white),
                     contentDescription = "Open application settings",
                     modifier = Modifier
                         .padding(6.dp)
@@ -183,7 +188,7 @@ fun Header(muteCallback: () -> Unit) {
                 )
                 var mute by remember { mutableStateOf(R.drawable.speaker_white) }
                 Image(
-                    painter = painterResource(id = mute),
+                    painter = painterResource(mute),
                     contentDescription = "Turn sound on or off",
                     modifier = Modifier
                         .padding(8.dp)
@@ -201,7 +206,7 @@ fun Header(muteCallback: () -> Unit) {
                 Modifier.align(Alignment.TopStart)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.info),
+                    painter = painterResource(R.drawable.info),
                     contentDescription = "Open the application's website on web browser",
                     modifier = Modifier
                         .padding(6.dp)
@@ -218,30 +223,40 @@ fun Header(muteCallback: () -> Unit) {
 }
 
 @Composable
-fun MainContent(road: String, otherInformation: String, buttonCallback: () -> Unit) {
+fun MainContent(road: String, otherInformation: String, tts: TextToSpeech, buttonCallback: () -> Unit) {
+    val isSpeakingState = remember { mutableStateOf(tts.isSpeaking) }
+    DisposableEffect(tts) {
+        val callback = object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) {
+                isSpeakingState.value = true
+            }
+
+            override fun onDone(utteranceId: String?) {
+                isSpeakingState.value = false
+            }
+
+            override fun onError(utteranceId: String?) {
+                isSpeakingState.value = false
+            }
+        }
+        tts.setOnUtteranceProgressListener(callback)
+
+        onDispose {
+            tts.setOnUtteranceProgressListener(null)
+        }
+    }
     Box {
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Center)
         ) {
-            val soundImageId = if (MaterialTheme.colors.isLight) {
-                R.drawable.sound1_black
-            } else {
-                R.drawable.sound1_white
-            }
-            Image(
-                painter = painterResource(id = soundImageId),
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .size(225.dp, 225.dp)
-            )
+            AnimatedSoundImage(isSpeakingState.value)
             Spacer(Modifier.height(75.dp))
             Text(
                 text = road,
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
                     .padding(20.dp, 0.dp),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
@@ -250,8 +265,7 @@ fun MainContent(road: String, otherInformation: String, buttonCallback: () -> Un
             Text(
                 text = otherInformation,
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                fontSize = 28.sp,
+                ,fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(75.dp))
@@ -259,8 +273,7 @@ fun MainContent(road: String, otherInformation: String, buttonCallback: () -> Un
                 onClick = buttonCallback,
                 modifier = Modifier
                     .size(250.dp, 75.dp)
-                    .align(Alignment.CenterHorizontally),
-                shape = CircleShape,
+                ,shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
             ) {
                 Text(
@@ -271,6 +284,30 @@ fun MainContent(road: String, otherInformation: String, buttonCallback: () -> Un
             }
         }
     }
+}
+
+@Composable
+fun AnimatedSoundImage(isSpeaking: Boolean) {
+    val images = if (MaterialTheme.colors.isLight) {
+        listOf(R.drawable.sound1_black, R.drawable.sound2_black)
+    } else {
+        listOf(R.drawable.sound1_white, R.drawable.sound2_white)
+    }
+    val currentIndex = remember { mutableStateOf(0) }
+
+    LaunchedEffect(isSpeaking) {
+        while (isSpeaking) {
+            currentIndex.value = (currentIndex.value + 1) % images.size
+            delay(kotlin.random.Random.nextLong(50, 150))
+        }
+    }
+
+    Image(
+        painter = painterResource(images[currentIndex.value]),
+        contentDescription = null,
+        modifier = Modifier
+            .size(225.dp, 225.dp)
+    )
 }
 
 @Composable
@@ -304,7 +341,8 @@ fun MyAlertDialog(callback: () -> Unit) {
                 Text(
                     text = "Sulje",
                     style = MaterialTheme.typography.body1,
-                    color = MaterialTheme.colors.primaryVariant
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.secondaryVariant
                 )
             }
         },
@@ -319,6 +357,7 @@ fun MyAlertDialog(callback: () -> Unit) {
             ) {
                 Text(
                     text = "Avaa asetukset",
+                    fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.body1
                 )
             }
@@ -329,12 +368,27 @@ fun MyAlertDialog(callback: () -> Unit) {
 @Composable
 fun MyLocalBroadcastManager(intentFilter: IntentFilter, onReceive: (Intent) -> Unit) {
     val context = LocalContext.current
-    LaunchedEffect(context) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(context) {
          val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
                 onReceive(intent)
             }
         }
-        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, intentFilter)
+
+        val observer = object : DefaultLifecycleObserver {
+            override fun onStop(owner: LifecycleOwner) {
+                LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
+            }
+
+            override fun onStart(owner: LifecycleOwner) {
+                LocalBroadcastManager.getInstance(context).registerReceiver(receiver, intentFilter)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 }
