@@ -19,7 +19,7 @@ class UpdateLocationService : Service() {
         val longitude = intent?.getDoubleExtra("longitude", 0.0)
         val client = OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS).build()
         val request = Request.Builder()
-            .url("https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=$latitude&lon=$longitude")
+            .url("https://api.joonatandepascale.fi/api/katutiedot/$latitude/$longitude")
             .build()
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {

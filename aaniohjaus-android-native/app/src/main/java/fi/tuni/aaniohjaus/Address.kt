@@ -3,28 +3,28 @@ package fi.tuni.aaniohjaus
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Address(var road : String? = null,
-                   var house_number : String? = null,
-                   var postcode : String? = null,
-                   var city : String? = null) {
+data class Address(var katu : String? = null,
+                   var katunumero : String? = null,
+                   var postinumero : String? = null,
+                   var kunta : String? = null) {
 
     fun roadWithHouseNumber() : String {
-        return if (house_number != null) "${this.road} ${this.house_number}," else "${this.road},"
+        return "${this.katu} ${this.katunumero},"
     }
 
     fun postCodeWithCity() : String {
-        return "${this.postcode}, ${this.city}"
+        return "${this.postinumero}, ${this.kunta}"
     }
 
     fun separatePostalCodeNumbers() : String {
-        return if (postcode != null) this.postcode!!.split("").joinToString(" ") else ""
+        return this.postinumero!!.split("").joinToString(" ")
     }
 
     fun toStringWithPostalCodesSeparated() : String {
-        return "${roadWithHouseNumber()}, ${separatePostalCodeNumbers()}, $city"
+        return "${roadWithHouseNumber()}, ${separatePostalCodeNumbers()}, $kunta"
     }
 
     override fun toString() : String {
-        return "${this.road} ${this.house_number}, $postcode, $city"
+        return "${this.katu} ${this.katunumero}, ${this.postinumero}, ${this.kunta}"
     }
 }
