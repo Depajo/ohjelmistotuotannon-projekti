@@ -1,9 +1,8 @@
 const express = require("express");
-const { /*getKatutiedot,*/ getBy } = require("../controllers/voicecontrol");
+const {getLocation} = require("../controllers/voicecontrol");
 
 const router = express.Router();
 
-//router.get("/", getKatutiedot);
-router.get("/:latitude/:longitude", getBy);
+router.get("/:latitude/:longitude", getLocation);
 
 module.exports = router;
