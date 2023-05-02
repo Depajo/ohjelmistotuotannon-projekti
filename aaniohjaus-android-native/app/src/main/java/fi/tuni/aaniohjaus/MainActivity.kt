@@ -176,7 +176,7 @@ fun Header(muteCallback: () -> Unit) {
             ) {
                 Image(
                     painter = painterResource(R.drawable.settings_white),
-                    contentDescription = "Open application settings",
+                    contentDescription = "Avaa sovelluksen asetukset",
                     modifier = Modifier
                         .padding(6.dp)
                         .size(50.dp)
@@ -189,7 +189,7 @@ fun Header(muteCallback: () -> Unit) {
                 var mute by remember { mutableStateOf(R.drawable.speaker_white) }
                 Image(
                     painter = painterResource(mute),
-                    contentDescription = "Turn sound on or off",
+                    contentDescription = "Laita ääni päälle/pois",
                     modifier = Modifier
                         .padding(8.dp)
                         .size(50.dp)
@@ -207,7 +207,7 @@ fun Header(muteCallback: () -> Unit) {
             ) {
                 Image(
                     painter = painterResource(R.drawable.info),
-                    contentDescription = "Open the application's website on web browser",
+                    contentDescription = "Avaa sovelluksen nettisivu selaimessa",
                     modifier = Modifier
                         .padding(6.dp)
                         .size(50.dp)
