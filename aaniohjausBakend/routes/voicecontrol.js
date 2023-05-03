@@ -1,5 +1,5 @@
 const express = require("express");
-const {getLocation} = require("../controllers/voicecontrol");
+const { getLocation } = require("../controllers/voicecontrol");
 
 const router = express.Router();
 
