@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b28be8f2-1aec-4326-ad7d-be69d0fdb49b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/3b5f7ead-aee7-4a6d-9119-a5e8bb75fd87.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/3b5f7ead-aee7-4a6d-9119-a5e8bb75fd87.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connections/voicecontrol.js" beforeDir="false" afterPath="$PROJECT_DIR$/connections/voicecontrol.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/voicecontrol.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/voicecontrol.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/voicecontrol.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/voicecontrol.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/voicecontrol.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/voicecontrol.js" afterDir="false" />
-    </list>
+    <list default="true" id="b28be8f2-1aec-4326-ad7d-be69d0fdb49b" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

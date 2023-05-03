@@ -3,7 +3,6 @@ const connection = require("../connections/voicecontrol");
 const aaniohjaus = {
   findBy: (latitude, longitude) =>
     new Promise((resolve, reject) => {
-      console.log(latitude, longitude);
       let query = `SELECT latitude, longitude, katu, katunumero, a.postinumero,k.kunta, ST_Distance_Sphere(POINT(?, ?), POINT(longitude, latitude)) * .001
       AS distance_in_kms
       FROM katutiedot
