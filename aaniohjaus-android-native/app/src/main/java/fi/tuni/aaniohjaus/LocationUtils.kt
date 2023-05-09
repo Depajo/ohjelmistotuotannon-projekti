@@ -27,10 +27,10 @@ object LocationUtils {
         }.build()
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-//                val lat = kotlin.random.Random.nextDouble(61.49000, 61.50000)
-//                val lon = kotlin.random.Random.nextDouble(23.80000, 23.85000)
+//                val lat = 61.336807
+//                val lon = 23.742924
 //                Toast.makeText(activity, locationResult.lastLocation!!.speed.toString(), Toast.LENGTH_SHORT).show()
-                if (locationResult.lastLocation!!.speed > 2.0 || address == null) {
+                if (locationResult.lastLocation!!.speed > 1.0 || address == null) {
                     val myIntent = Intent(activity, UpdateLocationService::class.java)
                         .putExtra("latitude", locationResult.lastLocation?.latitude)
                         .putExtra("longitude", locationResult.lastLocation?.longitude)
