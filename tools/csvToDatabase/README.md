@@ -39,8 +39,7 @@ munincipality._ Only use .csv files that have only one region id and munincipali
 !!!
 
 Depending on how many lines there are in the .csv file, this script will take time. After every group of data is done inserting data, there is a timestap for how long it
-took. Usually the last group (streets) take the longest and in extreme cases may take up to several tens of minutes in executing the code. If it seems that the code 
-isn't doing anything, it actually is. The script will end either in a message that says the insert was successful or in a sql error that reverts all inserts.
+took. Usually the last group (streets) take the longest and in extreme cases may take up to several tens of minutes in executing the code. The script will end either in a message that says the insert was successful or in a sql error that reverts all inserts.
 
 This script uses transactions when inserting data to the database and will only commit changes to the database when all insert queries are successful. In case of 
 an sql error, the insert queries will rollback and no changes will be committed
