@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b28be8f2-1aec-4326-ad7d-be69d0fdb49b" name="Changes" comment="" />
+    <list default="true" id="b28be8f2-1aec-4326-ad7d-be69d0fdb49b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/3b5f7ead-aee7-4a6d-9119-a5e8bb75fd87.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/3b5f7ead-aee7-4a6d-9119-a5e8bb75fd87.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/voicecontrol.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/voicecontrol.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/localhost.REST" beforeDir="false" afterPath="$PROJECT_DIR$/localhost.REST" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

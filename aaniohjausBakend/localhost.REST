@@ -3,3 +3,9 @@ GET http://localhost:3000/api/katutiedot/select?latitude=61.5629610ANDlongitude=
 
 ###GET
 GET http://localhost:3000/api/katutiedot/61.498139/23.7515
+
+###GET
+GET http://localhost:3000/api/katutiedot/kissa/koira
+
+###GET
+GET http://localhost:3000/api/katutiedot/81.498139/23.7515
