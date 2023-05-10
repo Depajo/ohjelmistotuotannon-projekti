@@ -8,4 +8,5 @@ GET http://localhost:3000/api/katutiedot/61.498139/23.7515
 GET http://localhost:3000/api/katutiedot/kissa/koira
 
 ###GET
-GET http://localhost:3000/api/katutiedot/81.498139/23.7515
+GET http://localhost:3000/api/katutiedot/61.56291234/23.98469123
+
