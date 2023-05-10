@@ -17,7 +17,7 @@ class UpdateLocationService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val latitude = intent?.getDoubleExtra("latitude", 0.0)
         val longitude = intent?.getDoubleExtra("longitude", 0.0)
-        val client = OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS).build()
+        val client = OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).build()
         val request = Request.Builder()
             .url("https://api.joonatandepascale.fi/api/katutiedot/$latitude/$longitude")
             .build()
