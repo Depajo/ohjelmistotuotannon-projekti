@@ -11,8 +11,8 @@ const getLocation = async (req, res) => {
 		res.status(400).send(validation.error.details[0].message);
 		return;
 	} else {
-		const latitude = req.params.latitude;
-		const longitude = req.params.longitude;
+		const latitude = validation.value.latitude;
+		const longitude = validation.value.longitude;
 		try {
 			const response = await katutiedot.findBy(latitude, longitude);
 			if (response) {
