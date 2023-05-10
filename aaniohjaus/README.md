@@ -34,4 +34,4 @@ When the app is running, it uses the device's GPS to determine the user's curren
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENCE.md](LICENSE.md) file for details.
