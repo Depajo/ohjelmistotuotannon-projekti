@@ -13,10 +13,10 @@ The following instructions will help you get a copy of Ääniohjaus application'
 2. Move to folder: `cd ohjelmistotuotannon-projekti/aaniohjausBakend`
 3. Install the necessary dependencies: `npm install`
 4. Run locally : 
-    'nodemon index.js'
+    `nodemon index.js`
 
 5. Run tests locally : 
-    'npm run test'
+    `npm run test`
 
 ## Dependencies
 
