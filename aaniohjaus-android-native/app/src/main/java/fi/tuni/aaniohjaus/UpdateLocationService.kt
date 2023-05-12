@@ -28,10 +28,11 @@ class UpdateLocationService : Service() {
             override fun onResponse(call: Call, response: Response) {
                 response.use {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                    val myIntent: Intent = if (response.body!!.string().isEmpty()) {
+                    val responseBodyString = response.body!!.string()
+                    val myIntent: Intent = if (responseBodyString.isEmpty()) {
                         Intent("fetchResult").putExtra("fetchResult", "")
                     } else {
-                        Intent("fetchResult").putExtra("fetchResult", response.body!!.string())
+                        Intent("fetchResult").putExtra("fetchResult", responseBodyString)
                     }
                     LocalBroadcastManager.getInstance(this@UpdateLocationService).sendBroadcast(myIntent)
                     stopSelf()
