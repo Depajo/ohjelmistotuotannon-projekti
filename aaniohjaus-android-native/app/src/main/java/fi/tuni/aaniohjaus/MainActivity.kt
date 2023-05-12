@@ -218,7 +218,7 @@ fun Header(muteCallback: () -> Unit) {
                         .size(50.dp)
                         .clickable {
                             val intent = Intent(Intent.ACTION_VIEW)
-                            intent.data = Uri.parse("https://www.google.com")
+                            intent.data = Uri.parse("https://homepages.tuni.fi/lotta.haverinen/aaniohjaus.html")
                             context.startActivity(intent)
                         }
                 )
