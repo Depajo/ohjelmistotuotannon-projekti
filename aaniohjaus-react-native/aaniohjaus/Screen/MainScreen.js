@@ -29,7 +29,9 @@ const MainScreen = () => {
       if (state === 'active') {
         askPermission();
         firstUpdate.current = true;
-        speakingStreet();
+        if (mute !== false) {
+          speakingStreet();
+        }
       }
     });
     const colorSchema = Appearance.getColorScheme();
@@ -62,7 +64,7 @@ const MainScreen = () => {
   };
 
   const speakingStreet = () => {
-    if (street != null && mute === false) {
+    if (street != null && mute !== false) {
       setSpeeking(true);
       speak(address.katu)
         .then(() => {
