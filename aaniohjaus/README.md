@@ -21,8 +21,7 @@ You will need the following tools to get started:
 3. Install the necessary dependencies: `npm install`
 4. Run React Native:
 
-IOS: `react-native run-ios`
-Android: `react-native run-android`
+IOS: `react-native run-iOS`
 
 ## User Guide
 
