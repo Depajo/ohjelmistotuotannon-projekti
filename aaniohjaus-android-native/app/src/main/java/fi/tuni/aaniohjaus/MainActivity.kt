@@ -6,13 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -79,6 +77,11 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                         var openDialog by remember { mutableStateOf(gps) }
                         MyLocalBroadcastManager(IntentFilter("fetchResult")) {
                             thread {
+                                if (it.getStringExtra("fetchResult") == "") {
+                                    road = "Olet toiminta-alueen"
+                                    otherInformation = "ulkopuolella"
+                                    return@thread
+                                }
                                 val rootNode = ObjectMapper().readTree(it.getStringExtra("fetchResult"))
                                 val addressNode = rootNode[0]
                                 address = ObjectMapper().treeToValue(addressNode, Address::class.java)
