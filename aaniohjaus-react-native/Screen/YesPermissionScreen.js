@@ -36,7 +36,7 @@ const YesPermissionScreen = ({address, getLocation, speeking}) => {
           </Text>
         </View>
       ) : (
-        <Text style={styles.TextStyle}>Ei sijaintia</Text>
+        <Text style={styles.TextStyle}>Puuttuva paikkatieto</Text>
       )}
     </View>
   );

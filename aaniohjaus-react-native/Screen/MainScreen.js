@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Platform, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
-import speak from '../Tools/Speak';
+import {isSpeaking, speak, stopSpeak} from '../Tools/Speak';
 import fetchLocation from '../Tools/Fetch';
 import {ios, android} from '../Tools/Permission';
 import YesPermissionScreen from './YesPermissionScreen';
@@ -13,6 +13,7 @@ import SpeakAll from '../Components/SpeakAll';
 import {Appearance, AppState} from 'react-native';
 import {VolumeManager} from 'react-native-volume-manager';
 import InfoButton from '../Components/InfoButton';
+import Tts from 'react-native-tts';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
@@ -29,9 +30,7 @@ const MainScreen = () => {
       if (state === 'active') {
         askPermission();
         firstUpdate.current = true;
-        if (mute !== false) {
-          speakingStreet();
-        }
+        speakingStreet();
       }
     });
     const colorSchema = Appearance.getColorScheme();
@@ -44,9 +43,7 @@ const MainScreen = () => {
       styles.container.backgroundColor = '#f3f2f2';
       styles.safeAreaView.backgroundColor = '#292d32';
     }
-
     askPermission();
-
     speakingStreet();
   }, [street, mute]);
 
@@ -64,13 +61,13 @@ const MainScreen = () => {
   };
 
   const speakingStreet = () => {
-    if (street != null && mute !== false) {
+    if (street != null && mute === false) {
       setSpeeking(true);
-      speak(address.katu)
+      speak(street)
         .then(() => {
-          setTimeout(() => {
+          Tts.addEventListener('tts-finish', event => {
             setSpeeking(false);
-          }, 1500);
+          });
         })
         .catch(error => {
           console.log(error);
@@ -92,7 +89,7 @@ const MainScreen = () => {
               .then(response => {
                 // console.log(response);
                 setAddress(response);
-                setStreet(response.katu);
+                setStreet(`${response.katu} ${response.katunumero}`);
               })
               .catch(error => {
                 console.log(error);
@@ -158,7 +155,11 @@ const MainScreen = () => {
             </Text>
           </View>
           <View style={{flex: 2}}>
-            <SpeakAll setSpeeking={setSpeeking} address={address} />
+            <SpeakAll
+              speeking={speeking}
+              setSpeeking={setSpeeking}
+              address={address}
+            />
           </View>
         </View>
       </SafeAreaView>
