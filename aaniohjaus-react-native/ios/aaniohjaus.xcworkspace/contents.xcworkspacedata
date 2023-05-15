@@ -5,9 +5,9 @@
       location = "group:aaniohjaus.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Pods/Pods.xcodeproj">
+      location = "group:aaniohjaus.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:aaniohjaus.xcodeproj">
+      location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>
