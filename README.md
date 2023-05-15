@@ -31,7 +31,7 @@ will mute or unmute TTS.
 
 - Frontend: Android (Kotlin), iOS (React Native)
   - Android: [README.md](aaniohjaus-android-native/README.md)
-  - iOS: [README.md](aaniohjaus-react-native/README.md)
+  - iOS: [README.md](aaniohjaus/README.md)
 - Backend: MySQL, JavaScript, node.js
   - [README.md](aaniohjaus-backend/README.md)
 
