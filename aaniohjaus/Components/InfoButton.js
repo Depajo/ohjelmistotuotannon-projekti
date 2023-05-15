@@ -14,7 +14,7 @@ const InfoButton = () => {
   }, []);
 
   const openInfo = () => {
-    Linking.openURL('https://www.google.fi');
+    Linking.openURL('https://homepages.tuni.fi/lotta.haverinen/aaniohjaus.html');
   };
 
   return (
