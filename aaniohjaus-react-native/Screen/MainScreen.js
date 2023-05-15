@@ -32,6 +32,14 @@ const MainScreen = () => {
         firstUpdate.current = true;
         speakingStreet();
       }
+
+      if (state === 'background') {
+        stopSpeak();
+      }
+
+      if (state === 'inactive') {
+        stopSpeak();
+      }
     });
     const colorSchema = Appearance.getColorScheme();
     if (colorSchema === 'dark') {
