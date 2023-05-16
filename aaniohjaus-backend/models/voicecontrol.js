@@ -1,6 +1,9 @@
 const connection = require("../connections/voicecontrol");
-
-const aaniohjaus = {
+/**
+ * databaseQuery sends query to database with parameters it gets from /controllers
+ * ST_Distance_Sphere() takes given parameters as POINT and returns all data in a 100m radius from that POINT.
+ */
+const databaseQuery = {
   findBy: (latitude, longitude) =>
     new Promise((resolve, reject) => {
       let query = `SELECT latitude, longitude, katu, katunumero, a.postinumero,k.kunta, ST_Distance_Sphere(POINT(?, ?), POINT(longitude, latitude)) * .001
@@ -21,4 +24,4 @@ const aaniohjaus = {
     }),
 };
 
-module.exports = aaniohjaus;
+module.exports = databaseQuery;
