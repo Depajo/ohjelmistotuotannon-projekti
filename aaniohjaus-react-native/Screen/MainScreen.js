@@ -32,7 +32,7 @@ const MainScreen = () => {
     AppState.addEventListener('change', state => {
       if (state === 'active') {
         askPermission();
-        // firstUpdate.current = true;
+        firstUpdate.current = true;
         // speakingStreet();
       }
 
