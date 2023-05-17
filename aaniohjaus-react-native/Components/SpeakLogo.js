@@ -4,9 +4,10 @@ import voice1 from '../Assets/voice1.png';
 import voice2 from '../Assets/voice2.png';
 import voice1_white from '../Assets/voice1_white.png';
 import voice2_white from '../Assets/voice2_white.png';
-import {isSpeaking} from '../Tools/Speak';
 import {Appearance} from 'react-native';
 
+// SpeakLogo is a funciton that changes the image in the middle
+// of the screen in intervals when the app reads an address.
 const SpeakLogo = ({speeking}) => {
   const colorScheme = Appearance.getColorScheme();
   const [intervalRun, setIntervalRun] = React.useState(null);
