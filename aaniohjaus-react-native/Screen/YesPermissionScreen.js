@@ -33,9 +33,10 @@ const YesPermissionScreen = ({address, getLocation, speeking}) => {
           </Text>
           <Text style={styles.TextStyle}>{address.postinumero}</Text>
           <Text style={styles.TextStyle}>{address.kunta}</Text>
-          <Text style={{color: 'grey', textAlign: 'center'}}>
+          {/* For test */}
+          {/* <Text style={{color: 'grey', textAlign: 'center'}}>
             Etäisyys: {(address.distance_in_kms * 1000).toFixed(6)} metriä
-          </Text>
+          </Text> */}
         </View>
       ) : (
         <Text style={styles.TextStyle}>Puuttuva paikkatieto</Text>

@@ -165,14 +165,15 @@ const MainScreen = () => {
               getLocation={getLocation}
               speeking={speeking}
             />
-            <Text
+            {/* For tests */}
+            {/* <Text
               style={{color: 'grey', textAlign: 'center', marginBottom: 10}}>
               Sijaintia päivitetty: {count} kertaa{' '}
             </Text>
             <Text
               style={{color: 'grey', textAlign: 'center', marginBottom: 10}}>
               Nopeus: {speed} km/h
-            </Text>
+            </Text> */}
           </View>
           <View style={{flex: 2}}>
             <SpeakAll
