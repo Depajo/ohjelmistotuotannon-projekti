@@ -26,11 +26,14 @@ const MainScreen = () => {
   const firstUpdate = React.useRef(true);
 
   useEffect(() => {
+    // This code calls a function that checks if the app is active, in the background or inactive.
+    // if the app is active it calls a function that asks permission to use location.
+    // if the app is inactive or in the background, the app stops speaking.
     AppState.addEventListener('change', state => {
       if (state === 'active') {
         askPermission();
-        firstUpdate.current = true;
-        speakingStreet();
+        // firstUpdate.current = true;
+        // speakingStreet();
       }
 
       if (state === 'background') {
@@ -41,6 +44,8 @@ const MainScreen = () => {
         stopSpeak();
       }
     });
+
+    // This checks witch color scheme is used and changes the background color of the app accordingly.
     const colorSchema = Appearance.getColorScheme();
     if (colorSchema === 'dark') {
       styles.menu.backgroundColor = '#0d0d0d';
@@ -55,24 +60,29 @@ const MainScreen = () => {
     speakingStreet();
   }, [street, mute]);
 
+  // Enable the volume control even in silent mode
   VolumeManager.enableInSilenceMode(true);
 
   const askPermission = async () => {
     if (Platform.OS === 'ios') {
+      // Request location permissions for iOS
       let permissions = await ios();
       setPermissions(permissions);
     }
     if (Platform.OS === 'android') {
+      // Request location permissions for Android
       let permissions = await android();
       setPermissions(permissions);
     }
   };
 
+  //
   const speakingStreet = () => {
     if (street != null && mute === false) {
       setSpeeking(true);
       speak(street)
         .then(() => {
+          // Add an event listener for when the text-to-speech finishes
           Tts.addEventListener('tts-finish', event => {
             setSpeeking(false);
           });
@@ -85,6 +95,7 @@ const MainScreen = () => {
 
   const getLocation = () => {
     if (permissions === 'granted') {
+      // Get the current position using the Geolocation API
       Geolocation.getCurrentPosition(
         position => {
           // console.log(position);
@@ -93,6 +104,7 @@ const MainScreen = () => {
           if (position.coords.speed > 0.2 || firstUpdate.current) {
             firstUpdate.current = false;
             setCount(count => count + 1);
+            // Fetch the location details based on the latitude and longitude
             fetchLocation(position.coords.longitude, position.coords.latitude)
               .then(response => {
                 // console.log(response);

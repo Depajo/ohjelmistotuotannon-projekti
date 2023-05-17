@@ -4,6 +4,8 @@ import {Appearance} from 'react-native';
 import settings_white from '../Assets/settings_white.png';
 import settings_black from '../Assets/settings_black.png';
 
+// This is the settings button that is used to open the location settings of the phone.
+// It is called in the MainScreen.js.
 const SettingsButton = () => {
   const [icon, setIcon] = React.useState(settings_white);
   useEffect(() => {
