@@ -31,7 +31,7 @@ data class Address(var katu : String? = null,
      * @return The formatted string.
      */
     fun postCodeWithCity() : String {
-        return "${this.postinumero}, ${this.kunta}"
+        return "${this.postinumero} ${this.kunta}"
     }
 
     /**
