@@ -517,7 +517,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fi.tamk.ohjemistotuotanto;
+				PRODUCT_BUNDLE_IDENTIFIER = fi.tamk.aaniohjaus;
 				PRODUCT_NAME = aaniohjaus;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -551,7 +551,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fi.tamk.ohjemistotuotanto;
+				PRODUCT_BUNDLE_IDENTIFIER = fi.tamk.aaniohjaus;
 				PRODUCT_NAME = aaniohjaus;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
