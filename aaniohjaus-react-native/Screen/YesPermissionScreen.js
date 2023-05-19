@@ -30,9 +30,11 @@ const YesPermissionScreen = ({address, getLocation, speeking}) => {
             {'undefined' !== address.katunumero
               ? address.katunumero
               : 'Ei numeroa'}
+            ,
           </Text>
-          <Text style={styles.TextStyle}>{address.postinumero}</Text>
-          <Text style={styles.TextStyle}>{address.kunta}</Text>
+          <Text style={styles.TextStyle}>
+            {address.postinumero} {address.kunta}
+          </Text>
           {/* For test */}
           {/* <Text style={{color: 'grey', textAlign: 'center'}}>
             Etäisyys: {(address.distance_in_kms * 1000).toFixed(6)} metriä
