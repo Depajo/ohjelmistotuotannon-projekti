@@ -7,11 +7,13 @@ const YesPermissionScreen = ({address, getLocation, speeking}) => {
   const colorScheme = Appearance.getColorScheme();
 
   useEffect(() => {
+    // Set the text color based on the color scheme (dark or light)
     if (colorScheme === 'dark') {
       styles.TextStyle.color = 'white';
     } else {
       styles.TextStyle.color = 'black';
     }
+    // Get the current location once and then periodically every 1 second
     getLocation();
     setInterval(() => {
       getLocation();
@@ -31,12 +33,13 @@ const YesPermissionScreen = ({address, getLocation, speeking}) => {
           </Text>
           <Text style={styles.TextStyle}>{address.postinumero}</Text>
           <Text style={styles.TextStyle}>{address.kunta}</Text>
-          <Text style={{color: 'grey', textAlign: 'center'}}>
+          {/* For test */}
+          {/* <Text style={{color: 'grey', textAlign: 'center'}}>
             Etäisyys: {(address.distance_in_kms * 1000).toFixed(6)} metriä
-          </Text>
+          </Text> */}
         </View>
       ) : (
-        <Text style={styles.TextStyle}>Ei sijaintia</Text>
+        <Text style={styles.TextStyle}>Puuttuva paikkatieto</Text>
       )}
     </View>
   );

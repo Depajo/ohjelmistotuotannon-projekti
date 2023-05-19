@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Platform, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
-import speak from '../Tools/Speak';
+import {isSpeaking, speak, stopSpeak} from '../Tools/Speak';
 import fetchLocation from '../Tools/Fetch';
 import {ios, android} from '../Tools/Permission';
 import YesPermissionScreen from './YesPermissionScreen';
@@ -13,6 +13,7 @@ import SpeakAll from '../Components/SpeakAll';
 import {Appearance, AppState} from 'react-native';
 import {VolumeManager} from 'react-native-volume-manager';
 import InfoButton from '../Components/InfoButton';
+import Tts from 'react-native-tts';
 
 const MainScreen = () => {
   const [address, setAddress] = React.useState(null);
@@ -25,15 +26,26 @@ const MainScreen = () => {
   const firstUpdate = React.useRef(true);
 
   useEffect(() => {
+    // This code calls a function that checks if the app is active, in the background or inactive.
+    // if the app is active it calls a function that asks permission to use location.
+    // if the app is inactive or in the background, the app stops speaking.
     AppState.addEventListener('change', state => {
       if (state === 'active') {
         askPermission();
         firstUpdate.current = true;
-        if (mute !== false) {
-          speakingStreet();
-        }
+        // speakingStreet();
+      }
+
+      if (state === 'background') {
+        stopSpeak();
+      }
+
+      if (state === 'inactive') {
+        stopSpeak();
       }
     });
+
+    // This checks witch color scheme is used and changes the background color of the app accordingly.
     const colorSchema = Appearance.getColorScheme();
     if (colorSchema === 'dark') {
       styles.menu.backgroundColor = '#0d0d0d';
@@ -44,33 +56,36 @@ const MainScreen = () => {
       styles.container.backgroundColor = '#f3f2f2';
       styles.safeAreaView.backgroundColor = '#292d32';
     }
-
     askPermission();
-
     speakingStreet();
   }, [street, mute]);
 
+  // Enable the volume control even in silent mode
   VolumeManager.enableInSilenceMode(true);
 
   const askPermission = async () => {
     if (Platform.OS === 'ios') {
+      // Request location permissions for iOS
       let permissions = await ios();
       setPermissions(permissions);
     }
     if (Platform.OS === 'android') {
+      // Request location permissions for Android
       let permissions = await android();
       setPermissions(permissions);
     }
   };
 
+  //
   const speakingStreet = () => {
-    if (street != null && mute !== false) {
+    if (street != null && mute === false) {
       setSpeeking(true);
-      speak(address.katu)
+      speak(street)
         .then(() => {
-          setTimeout(() => {
+          // Add an event listener for when the text-to-speech finishes
+          Tts.addEventListener('tts-finish', event => {
             setSpeeking(false);
-          }, 1500);
+          });
         })
         .catch(error => {
           console.log(error);
@@ -80,6 +95,7 @@ const MainScreen = () => {
 
   const getLocation = () => {
     if (permissions === 'granted') {
+      // Get the current position using the Geolocation API
       Geolocation.getCurrentPosition(
         position => {
           // console.log(position);
@@ -88,11 +104,12 @@ const MainScreen = () => {
           if (position.coords.speed > 0.2 || firstUpdate.current) {
             firstUpdate.current = false;
             setCount(count => count + 1);
+            // Fetch the location details based on the latitude and longitude
             fetchLocation(position.coords.longitude, position.coords.latitude)
               .then(response => {
                 // console.log(response);
                 setAddress(response);
-                setStreet(response.katu);
+                setStreet(`${response.katu} ${response.katunumero}`);
               })
               .catch(error => {
                 console.log(error);
@@ -148,17 +165,22 @@ const MainScreen = () => {
               getLocation={getLocation}
               speeking={speeking}
             />
-            <Text
+            {/* For tests */}
+            {/* <Text
               style={{color: 'grey', textAlign: 'center', marginBottom: 10}}>
               Sijaintia päivitetty: {count} kertaa{' '}
             </Text>
             <Text
               style={{color: 'grey', textAlign: 'center', marginBottom: 10}}>
               Nopeus: {speed} km/h
-            </Text>
+            </Text> */}
           </View>
           <View style={{flex: 2}}>
-            <SpeakAll setSpeeking={setSpeeking} address={address} />
+            <SpeakAll
+              speeking={speeking}
+              setSpeeking={setSpeeking}
+              address={address}
+            />
           </View>
         </View>
       </SafeAreaView>

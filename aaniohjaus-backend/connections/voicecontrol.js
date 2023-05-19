@@ -1,10 +1,9 @@
 const mysql = require("mysql");
 require("dotenv").config();
 
-/*
-HUOM!! jos käyttää user: process.env.USERNAME, niin API ei tunnista USERNAME:en tallennettua käyttäjää
-vaan ottaa tietokoneen käyttäjän nimen, tämä huomioksi kun teette omat .env-tiedostot./Ella
-*/
+/**
+ * Create database connection with .env-file
+ */
 
 const connection = mysql.createPool({
   connectionLimit: 10,

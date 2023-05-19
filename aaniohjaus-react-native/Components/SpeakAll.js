@@ -1,10 +1,13 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
-import speak from '../Tools/Speak';
+import {speak, stopSpeak} from '../Tools/Speak';
 import {Appearance} from 'react-native';
 import {enable} from 'react-native-volume-manager';
+import Tts from 'react-native-tts';
 
-const SpeakAll = ({setSpeeking, address}) => {
+// This function speaks all the address information.
+// It is called from Screen/MainScreen.js.
+const SpeakAll = ({speeking, setSpeeking, address}) => {
   const colorSchema = Appearance.getColorScheme();
   const [disabled, setDisabled] = React.useState(false);
   if (colorSchema === 'dark') {
@@ -30,19 +33,25 @@ const SpeakAll = ({setSpeeking, address}) => {
     <TouchableOpacity
       style={styles.button}
       onPress={() => {
-        setDisabled(true);
-        setSpeeking(true);
-        speakAddress(address.katu);
-        speakAddress(address.katunumero);
-        speakAddress(address.postinumero);
-        speakAddress(address.kunta);
-        setTimeout(() => {
+        Tts.addEventListener('tts-start', event => {
+          setSpeeking(true);
+        });
+        if (speeking) {
+          stopSpeak();
+        } else {
+          speakAddress(address.katu);
+          speakAddress(address.katunumero);
+          speakAddress(address.postinumero);
+          speakAddress(address.kunta);
+        }
+        Tts.addEventListener('tts-finish', event => {
           setSpeeking(false);
-          setDisabled(false);
-        }, 5800);
+        });
       }}
       disabled={disabled || address === null}>
-      <Text style={styles.TextStyle}>TOISTA OSOITE</Text>
+      <Text style={styles.TextStyle}>
+        {speeking ? 'PYSÄYTÄ TOISTO' : 'TOISTA OSOITE'}
+      </Text>
     </TouchableOpacity>
   );
 };
