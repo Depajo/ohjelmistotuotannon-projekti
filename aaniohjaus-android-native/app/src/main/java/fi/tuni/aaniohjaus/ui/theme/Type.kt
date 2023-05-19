@@ -7,7 +7,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Set of Material typography styles to start with
+/**
+ * DarkTypography represents the typography settings for the dark theme.
+ * It defines the style for the body1 text.
+ */
 val DarkTypography = Typography(
     body1 = TextStyle(
         fontFamily = FontFamily.Default,
@@ -17,6 +20,10 @@ val DarkTypography = Typography(
     )
 )
 
+/**
+ * LightTypography represents the typography settings for the light theme.
+ * It defines the style for the body1 text.
+ */
 val LightTypography = Typography(
     body1 = TextStyle(
         fontFamily = FontFamily.Default,
