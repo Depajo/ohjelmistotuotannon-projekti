@@ -134,11 +134,13 @@ a:active {
 .footer p {
   color: rgb(255, 255, 255);
 }
+/*button color and style*/
 .button {
   border-radius: 8px;
   padding: 14px 40px;
   background-color: #000000;
   color: #ffffff;
+  font-size: larger;
 }
 
 .button:hover {
@@ -155,6 +157,10 @@ img {
   padding-bottom: 5%;
   padding-top: 5%;
 }
+
+/*
+for mobile
+*/
 @media screen and (max-width: 600px) {
   .center {
     text-align: center;
