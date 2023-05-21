@@ -3,7 +3,6 @@ import {View, Linking, Alert, Platform, Text, Button} from 'react-native';
 
 const NoPermissionScreen = ({permissions}) => {
   useEffect(() => {
-    console.log('useEffect');
     // If the location permissions are denied or blocked, create an alert
     if (permissions === 'denied' || permissions === 'blocked') {
       createAlert();

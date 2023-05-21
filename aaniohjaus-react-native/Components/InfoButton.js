@@ -7,26 +7,15 @@ import info from '../Assets/info.png';
 // that contains information about the app.
 // It is called in the MainScreen.js.
 const InfoButton = () => {
-  const [icon, setIcon] = React.useState(info);
-  useEffect(() => {
-    if (Appearance.getColorScheme() === 'dark') {
-      setIcon(info);
-    } else {
-      setIcon(info);
-    }
-  }, []);
-
   const openInfo = () => {
-    Linking.openURL(
-      'https://homepages.tuni.fi/lotta.haverinen/aaniohjaus.html',
-    );
+    Linking.openURL('https://homepages.tuni.fi/lotta.haverinen/tekijat.html');
   };
 
   return (
     <View>
       <TouchableOpacity onPress={openInfo}>
         <Image
-          source={icon}
+          source={info}
           style={{
             width: 40,
             height: 40,

@@ -26,7 +26,7 @@ const SpeakLogo = ({speeking}) => {
         setImage(voice1);
       }
     }
-  }, [speeking]);
+  }, [speeking, colorScheme]);
 
   const changeImage = () => {
     let change = true;

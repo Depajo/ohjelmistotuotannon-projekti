@@ -18,7 +18,7 @@ const YesPermissionScreen = ({address, getLocation, speeking}) => {
     setInterval(() => {
       getLocation();
     }, 1000);
-  }, []);
+  }, [colorScheme]);
 
   return (
     <View style={styles.container}>

@@ -29,24 +29,4 @@ const ios = async () => {
   return ask;
 };
 
-const android = async () => {
-  let ask;
-  // Check if the platform is Android
-  if (Platform.OS === 'android') {
-    // Check the status of the location permission
-    ask = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-  }
-  try {
-    // If the location permission has not been granted and the platform is Android, request the permission
-    if (ask !== RESULTS.GRANTED && Platform.OS === 'android') {
-      let result = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-      return result;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-  // Return the permission status
-  return ask;
-};
-
-export {ios, android};
+export {ios};

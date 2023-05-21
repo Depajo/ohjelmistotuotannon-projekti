@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
 import {Platform, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
-import {isSpeaking, speak, stopSpeak} from '../Tools/Speak';
+import {speak, stopSpeak} from '../Tools/Speak';
 import fetchLocation from '../Tools/Fetch';
-import {ios, android} from '../Tools/Permission';
+import {ios} from '../Tools/Permission';
 import YesPermissionScreen from './YesPermissionScreen';
 import NoPermissionScreen from './NoPermissionScreen';
 import '../Components/MuteButton';
@@ -24,6 +24,7 @@ const MainScreen = () => {
   const [count, setCount] = React.useState(0);
   const [speed, setSpeed] = React.useState(0);
   const firstUpdate = React.useRef(true);
+  const colorSchema = Appearance.getColorScheme();
 
   useEffect(() => {
     // This code calls a function that checks if the app is active, in the background or inactive.
@@ -33,9 +34,7 @@ const MainScreen = () => {
       if (state === 'active') {
         askPermission();
         firstUpdate.current = true;
-        // speakingStreet();
       }
-
       if (state === 'background') {
         stopSpeak();
       }
@@ -46,7 +45,6 @@ const MainScreen = () => {
     });
 
     // This checks witch color scheme is used and changes the background color of the app accordingly.
-    const colorSchema = Appearance.getColorScheme();
     if (colorSchema === 'dark') {
       styles.menu.backgroundColor = '#0d0d0d';
       styles.container.backgroundColor = '#3a3a3a';
@@ -58,7 +56,7 @@ const MainScreen = () => {
     }
     askPermission();
     speakingStreet();
-  }, [street, mute]);
+  }, [street, mute, colorSchema]);
 
   // Enable the volume control even in silent mode
   VolumeManager.enableInSilenceMode(true);
@@ -69,14 +67,8 @@ const MainScreen = () => {
       let permissions = await ios();
       setPermissions(permissions);
     }
-    if (Platform.OS === 'android') {
-      // Request location permissions for Android
-      let permissions = await android();
-      setPermissions(permissions);
-    }
   };
 
-  //
   const speakingStreet = () => {
     if (street != null && mute === false) {
       setSpeeking(true);
@@ -138,6 +130,7 @@ const MainScreen = () => {
               }}>
               <InfoButton />
             </View>
+
             <View
               style={{
                 flex: 3,
@@ -159,6 +152,7 @@ const MainScreen = () => {
               <MuteButton mute={mute} setMute={setMute} />
             </View>
           </View>
+
           <View style={{flex: 7}}>
             <YesPermissionScreen
               address={address}
@@ -175,6 +169,7 @@ const MainScreen = () => {
               Nopeus: {speed} km/h
             </Text> */}
           </View>
+
           <View style={{flex: 2}}>
             <SpeakAll
               speeking={speeking}

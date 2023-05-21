@@ -2,13 +2,20 @@ import React, {useEffect} from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {speak, stopSpeak} from '../Tools/Speak';
 import {Appearance} from 'react-native';
-import {enable} from 'react-native-volume-manager';
 import Tts from 'react-native-tts';
 
 // This function speaks all the address information.
 // It is called from Screen/MainScreen.js.
 const SpeakAll = ({speeking, setSpeeking, address}) => {
   const colorSchema = Appearance.getColorScheme();
+  useEffect(() => {
+    if (address === undefined || address === null) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+  }, [address, colorSchema]);
+
   const [disabled, setDisabled] = React.useState(false);
   if (colorSchema === 'dark') {
     styles.button.backgroundColor = 'black';
@@ -48,7 +55,7 @@ const SpeakAll = ({speeking, setSpeeking, address}) => {
           setSpeeking(false);
         });
       }}
-      disabled={disabled || address === null}>
+      disabled={disabled}>
       <Text style={styles.TextStyle}>
         {speeking ? 'PYSÄYTÄ TOISTO' : 'TOISTA OSOITE'}
       </Text>

@@ -15,27 +15,6 @@ const speak = address => {
       // Resolve the promise with success
       resolve('success');
     }
-
-    // Check if the platform is Android
-    if (Platform.OS === 'android') {
-      // Add an event listener for when the speech starts
-      Tts.addEventListener('tts-start', event => console.log('start'));
-      // Set the default language for speech synthesis
-      Tts.setDefaultLanguage('fi-FI');
-      // Speak the given address using the specified parameters
-      Tts.speak(address, {
-        androidParams: {
-          KEY_PARAM_PITCH: 1,
-          KEY_PARAM_STREAM: 'STREAM_MUSIC',
-        },
-      });
-      // Add an event listener for when the speech finishes
-      Tts.addEventListener('tts-finish', event => console.log('finish'));
-      // Resolve the promise with success
-      resolve('success');
-    }
-    // Reject the promise with an error if the platform is neither iOS nor Android
-    reject('error');
   });
 };
 
